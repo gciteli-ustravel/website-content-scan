@@ -3,6 +3,7 @@
 *.multi-site.xlsx
 *.manual-fallback*.xlsx
 *.esto-exclusions.xlsx
+*.subpath-exclusions.xlsx
 __pycache__/
 .pytest_cache/
 .venv/

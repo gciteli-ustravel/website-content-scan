@@ -16,6 +16,7 @@ sites:
     sitemap: https://www.esto.ustravel.org/sitemap.xml
     exclude_paths:
       - /attendees
+      - /events
       - /speakers
 
   # Add more sites here as they are added to the scan.

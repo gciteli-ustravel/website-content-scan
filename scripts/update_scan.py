@@ -200,7 +200,7 @@ def should_exclude_path(path: str, exclude_paths: list[str]) -> bool:
             if path == "/":
                 return True
             continue
-        if path == excluded_path or path.startswith(f"{excluded_path}/"):
+        if path.startswith(f"{excluded_path}/"):
             return True
     return False
 
