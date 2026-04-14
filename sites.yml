@@ -14,6 +14,9 @@ sites:
 
   - name: esto.ustravel.org
     sitemap: https://www.esto.ustravel.org/sitemap.xml
+    exclude_paths:
+      - /attendees
+      - /speakers
 
   # Add more sites here as they are added to the scan.
   # Examples:

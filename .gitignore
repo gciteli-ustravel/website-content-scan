@@ -2,6 +2,7 @@
 *.filtered.xlsx
 *.multi-site.xlsx
 *.manual-fallback*.xlsx
+*.esto-exclusions.xlsx
 __pycache__/
 .pytest_cache/
 .venv/
