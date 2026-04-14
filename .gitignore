@@ -1,6 +1,7 @@
 *.updated.xlsx
 *.filtered.xlsx
 *.multi-site.xlsx
+*.manual-fallback*.xlsx
 __pycache__/
 .pytest_cache/
 .venv/

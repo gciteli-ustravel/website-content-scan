@@ -9,6 +9,7 @@ sites:
 
   - name: ipw.com
     sitemap: https://www.ipw.com/sitemap.xml
+    fallback_sitemap_file: manual-sitemaps/ipw.com/sitemap.xml
     allow_sitemap_errors: true
 
   - name: esto.ustravel.org

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import gzip
 import json
 import os
 import re
@@ -210,6 +211,13 @@ def fetch_xml(url: str) -> ElementTree.Element:
     return ElementTree.fromstring(response.content)
 
 
+def read_xml_file(path: Path) -> ElementTree.Element:
+    if path.suffix == ".gz":
+        with gzip.open(path, "rb") as handle:
+            return ElementTree.fromstring(handle.read())
+    return ElementTree.parse(path).getroot()
+
+
 def xml_name(element: ElementTree.Element) -> str:
     return element.tag.rsplit("}", 1)[-1]
 
@@ -228,18 +236,42 @@ def iter_sitemap_urls(sitemap_url: str, seen: set[str] | None = None) -> list[tu
     seen.add(sitemap_url)
 
     root = fetch_xml(sitemap_url)
+    return iter_sitemap_root(root, sitemap_url, seen)
+
+
+def iter_sitemap_file(path: Path, seen: set[str] | None = None) -> list[tuple[str, str]]:
+    seen = seen or set()
+    key = str(path.resolve())
+    if key in seen:
+        return []
+    seen.add(key)
+
+    root = read_xml_file(path)
+    return iter_sitemap_root(root, str(path), seen, path.parent)
+
+
+def iter_sitemap_root(
+    root: ElementTree.Element,
+    source: str,
+    seen: set[str],
+    local_base_dir: Path | None = None,
+) -> list[tuple[str, str]]:
     root_name = xml_name(root)
     entries: list[tuple[str, str]] = []
 
     if root_name == "sitemapindex":
         for sitemap in root:
             loc = child_text(sitemap, "loc")
-            if loc:
+            if not loc:
+                continue
+            if urlsplit(loc).scheme in {"http", "https"}:
                 entries.extend(iter_sitemap_urls(loc, seen))
+            elif local_base_dir:
+                entries.extend(iter_sitemap_file(local_base_dir / loc, seen))
         return entries
 
     if root_name != "urlset":
-        raise ValueError(f"Unsupported sitemap root '{root_name}' at {sitemap_url}")
+        raise ValueError(f"Unsupported sitemap root '{root_name}' at {source}")
 
     for url_node in root:
         loc = child_text(url_node, "loc")
@@ -256,10 +288,28 @@ def sitemap_pages(config_path: Path) -> dict[str, SitemapPage]:
         try:
             sitemap_entries = iter_sitemap_urls(site["sitemap"])
         except Exception as exc:
-            if site.get("allow_sitemap_errors"):
+            fallback_file = site.get("fallback_sitemap_file")
+            if fallback_file:
+                fallback_path = (config_path.parent / fallback_file).resolve()
+                if fallback_path.exists():
+                    print(
+                        f"Warning: using manual sitemap for {site['name']} because {site['sitemap']} could not be read: {exc}",
+                        file=sys.stderr,
+                    )
+                    sitemap_entries = iter_sitemap_file(fallback_path)
+                elif site.get("allow_sitemap_errors"):
+                    print(
+                        f"Warning: skipped {site['name']} because {site['sitemap']} could not be read and {fallback_file} was not found: {exc}",
+                        file=sys.stderr,
+                    )
+                    continue
+                else:
+                    raise
+            elif site.get("allow_sitemap_errors"):
                 print(f"Warning: skipped {site['name']} because {site['sitemap']} could not be read: {exc}", file=sys.stderr)
                 continue
-            raise
+            else:
+                raise
         for raw_url, lastmod in sitemap_entries:
             canonical, key, host = normalize_url(raw_url)
             path = clean_path(urlsplit(canonical).path)

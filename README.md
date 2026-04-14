@@ -54,6 +54,7 @@ sites:
 
   - name: ipw.com
     sitemap: https://www.ipw.com/sitemap.xml
+    fallback_sitemap_file: manual-sitemaps/ipw.com/sitemap.xml
     allow_sitemap_errors: true
 ```
 
@@ -62,6 +63,22 @@ The `name` is for humans. The updater derives the actual site value from each si
 Use `exclude_paths` when a site has sections that should not be added to the scan. Excluding `/news` also excludes every page below it, such as `/news/example-story`. Excluding `/` only skips the homepage, not the whole site.
 
 Use `allow_sitemap_errors: true` for a site whose sitemap may be temporarily blocked or unavailable. The workflow will log a warning and continue scanning the other sites.
+
+Use `fallback_sitemap_file` when a sitemap is visible in a browser but blocked from GitHub Actions. The updater tries the live sitemap first; if that fails and the fallback file exists, it reads the uploaded file instead.
+
+## Manual Sitemap Upload
+
+IPW currently uses Cloudflare protection that can block GitHub Actions from reading `https://www.ipw.com/sitemap.xml`. To include IPW in a scan:
+
+1. Open `https://www.ipw.com/sitemap.xml` in a browser.
+2. Save the page as `sitemap.xml`.
+3. In GitHub, open `manual-sitemaps/ipw.com/`.
+4. Click **Add file > Upload files**.
+5. Upload the saved `sitemap.xml`.
+6. Commit directly to `main`.
+7. Run the Excel fallback or Smartsheet workflow again.
+
+The IPW entry in `sites.yml` already points to `manual-sitemaps/ipw.com/sitemap.xml` as its fallback.
 
 ## Smartsheet Setup
 
