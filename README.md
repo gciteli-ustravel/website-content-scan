@@ -13,11 +13,12 @@ For every site listed in `sites.yml`, the updater:
 
 1. Reads the site's sitemap.
 2. Recursively follows sitemap indexes.
-3. Keeps normal web pages and skips files like PDFs, images, videos, XML, ZIPs, and spreadsheets.
-4. Normalizes URLs so `http`, `https`, `www`, and trailing slash differences do not create duplicates.
-5. Adds missing rows with `Site`, `Page`, `Sub-Page`, `Last Updated`, and `Page Status`.
-6. Updates `Last Updated` on existing rows when the sitemap provides a `lastmod` value.
-7. Sets `Page Status` to `Page Expired` for rows that no longer appear in the sitemap.
+3. Applies site-specific path exclusions.
+4. Keeps normal web pages and skips files like PDFs, images, videos, XML, ZIPs, and spreadsheets.
+5. Normalizes URLs so `http`, `https`, `www`, and trailing slash differences do not create duplicates.
+6. Adds missing rows with `Site`, `Page`, `Sub-Page`, `Last Updated`, and `Page Status`.
+7. Updates `Last Updated` on existing rows when the sitemap provides a `lastmod` value.
+8. Sets `Page Status` to `Page Expired` for rows that no longer appear in the sitemap.
 
 ## Required Sheet Columns
 
@@ -45,12 +46,19 @@ Edit `sites.yml` to add or remove websites:
 sites:
   - name: ustravel.org
     sitemap: https://www.ustravel.org/sitemap.xml
+    exclude_paths:
+      - /
+      - /news
+      - /press
+      - /research
 
   - name: ipw.com
     sitemap: https://www.ipw.com/sitemap.xml
 ```
 
 The `name` is for humans. The updater derives the actual site value from each sitemap URL and strips `www.` while preserving real subdomains such as `esto.ustravel.org`.
+
+Use `exclude_paths` when a site has sections that should not be added to the scan. Excluding `/news` also excludes every page below it, such as `/news/example-story`. Excluding `/` only skips the homepage, not the whole site.
 
 ## Smartsheet Setup
 

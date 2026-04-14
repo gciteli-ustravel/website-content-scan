@@ -98,27 +98,46 @@ def load_config(path: Path) -> list[dict[str, str]]:
     for site in sites:
         if not isinstance(site, dict) or not site.get("name") or not site.get("sitemap"):
             raise ValueError("Each site must include 'name' and 'sitemap'")
+        exclude_paths = site.get("exclude_paths", [])
+        if exclude_paths is None:
+            site["exclude_paths"] = []
+        elif not isinstance(exclude_paths, list):
+            raise ValueError("'exclude_paths' must be a list when provided")
     return sites
 
 
 def parse_simple_sites_yaml(text: str) -> dict[str, list[dict[str, str]]]:
     sites: list[dict[str, str]] = []
     current: dict[str, str] | None = None
+    current_list_key: str | None = None
 
     for raw_line in text.splitlines():
         line = raw_line.split("#", 1)[0].rstrip()
         stripped = line.strip()
         if not stripped or stripped == "sites:":
             continue
-        if stripped.startswith("- "):
+        if stripped.startswith("- ") and line.startswith("  - "):
             if current:
                 sites.append(current)
             current = {}
+            current_list_key = None
             stripped = stripped[2:].strip()
-        if ":" not in stripped or current is None:
+        elif stripped.startswith("- ") and current is not None and current_list_key:
+            current.setdefault(current_list_key, []).append(stripped[2:].strip().strip('"\''))
+            continue
+        if current is None:
+            continue
+        if ":" not in stripped:
             continue
         key, value = stripped.split(":", 1)
-        current[key.strip()] = value.strip().strip('"\'')
+        key = key.strip()
+        value = value.strip().strip('"\'')
+        if value:
+            current[key] = value
+            current_list_key = None
+        else:
+            current[key] = []
+            current_list_key = key
 
     if current:
         sites.append(current)
@@ -172,6 +191,19 @@ def is_webpage(url: str) -> bool:
     return True
 
 
+def should_exclude_path(path: str, exclude_paths: list[str]) -> bool:
+    path = clean_path(path)
+    for raw_excluded_path in exclude_paths:
+        excluded_path = clean_path(str(raw_excluded_path))
+        if excluded_path == "/":
+            if path == "/":
+                return True
+            continue
+        if path == excluded_path or path.startswith(f"{excluded_path}/"):
+            return True
+    return False
+
+
 def fetch_xml(url: str) -> ElementTree.Element:
     response = requests.get(url, timeout=30, headers={"User-Agent": "website-content-scan/1.0"})
     response.raise_for_status()
@@ -220,9 +252,12 @@ def iter_sitemap_urls(sitemap_url: str, seen: set[str] | None = None) -> list[tu
 def sitemap_pages(config_path: Path) -> dict[str, SitemapPage]:
     pages: dict[str, SitemapPage] = {}
     for site in load_config(config_path):
+        exclude_paths = site.get("exclude_paths", [])
         for raw_url, lastmod in iter_sitemap_urls(site["sitemap"]):
             canonical, key, host = normalize_url(raw_url)
             path = clean_path(urlsplit(canonical).path)
+            if should_exclude_path(path, exclude_paths):
+                continue
             page, sub_page = split_page_parts(path)
             pages[key] = SitemapPage(
                 url=canonical,
