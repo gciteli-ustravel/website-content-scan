@@ -18,10 +18,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r website_content_scan/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Update Smartsheet
         env:
           SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
           SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
-        run: python website_content_scan/scripts/update_scan.py --config website_content_scan/sites.yml
+        run: python scripts/update_scan.py --config sites.yml
