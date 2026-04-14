@@ -1,0 +1,10 @@
+sites:
+  - name: ustravel.org
+    sitemap: https://www.ustravel.org/sitemap.xml
+
+  # Add more sites here as they are added to the scan.
+  # Examples:
+  # - name: ipw.com
+  #   sitemap: https://www.ipw.com/sitemap.xml
+  # - name: esto.ustravel.org
+  #   sitemap: https://esto.ustravel.org/sitemap.xml
