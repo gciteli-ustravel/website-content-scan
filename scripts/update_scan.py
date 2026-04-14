@@ -253,7 +253,14 @@ def sitemap_pages(config_path: Path) -> dict[str, SitemapPage]:
     pages: dict[str, SitemapPage] = {}
     for site in load_config(config_path):
         exclude_paths = site.get("exclude_paths", [])
-        for raw_url, lastmod in iter_sitemap_urls(site["sitemap"]):
+        try:
+            sitemap_entries = iter_sitemap_urls(site["sitemap"])
+        except Exception as exc:
+            if site.get("allow_sitemap_errors"):
+                print(f"Warning: skipped {site['name']} because {site['sitemap']} could not be read: {exc}", file=sys.stderr)
+                continue
+            raise
+        for raw_url, lastmod in sitemap_entries:
             canonical, key, host = normalize_url(raw_url)
             path = clean_path(urlsplit(canonical).path)
             if should_exclude_path(path, exclude_paths):

@@ -54,11 +54,14 @@ sites:
 
   - name: ipw.com
     sitemap: https://www.ipw.com/sitemap.xml
+    allow_sitemap_errors: true
 ```
 
 The `name` is for humans. The updater derives the actual site value from each sitemap URL and strips `www.` while preserving real subdomains such as `esto.ustravel.org`.
 
 Use `exclude_paths` when a site has sections that should not be added to the scan. Excluding `/news` also excludes every page below it, such as `/news/example-story`. Excluding `/` only skips the homepage, not the whole site.
+
+Use `allow_sitemap_errors: true` for a site whose sitemap may be temporarily blocked or unavailable. The workflow will log a warning and continue scanning the other sites.
 
 ## Smartsheet Setup
 
