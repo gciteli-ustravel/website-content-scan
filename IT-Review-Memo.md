@@ -2,25 +2,26 @@
 
 ## To
 IT Department
+CC: JulieAnne Fried, Senior Director of Web and Digital
 
 ## From
-Web and Digital / Marketing Team
+Marketing and Digital team, Gabriel Citeli (Intern, Marketing & Digital 2026)
 
 ## Subject
 Request for IT Review of Website Content Scan Automation
 
 ## Date
-April 22, 2026
+April 23, 2026
 
 ## Purpose
 
-This memo requests IT review of a custom internal automation developed to support website content review and governance. The tool helps our team maintain a current inventory of website pages in SmartSheet by scanning public website sitemap files and automatically updating the tracking sheet.
+This memo requests IT review of a custom internal automation developed to support website content review and governance. The tool helps our team maintain a current inventory of website pages in SmartSheet by scanning public website sitemap files and automatically updating a tracking sheet.
 
 The goal of this request is to confirm that the automation is appropriate for ongoing internal use, identify any security or governance concerns, and determine the best long-term ownership model for the repository and its credentials.
 
 ## Business Need
 
-Our team is responsible for reviewing and maintaining content across multiple public-facing website properties. Because website content changes regularly, it is difficult to reliably identify new pages, updated pages, and pages that are no longer present through manual review alone.
+Our team is responsible for reviewing and maintaining content across multiple public-facing website properties. Because website content changes regularly, manual review alone is not sufficient to reliably identify new pages, updated pages, and pages that should not be public but are visible through search engines.
 
 This creates an operational gap in our content review process:
 
@@ -29,7 +30,7 @@ This creates an operational gap in our content review process:
 - staff time is spent manually checking sitemap content
 - the SmartSheet inventory can become incomplete over time
 
-This automation was created to reduce that manual effort and support a more consistent content review workflow. It scans public site maps, compares the results against the current SmartSheet inventory, and updates the sheet so the team can focus on the review process itself rather than manual page discovery.
+This automation was created to reduce that manual effort and support a more consistent content review workflow. It scans public site maps, compares the results against the current SmartSheet inventory, and updates the sheet so the team can focus on the content review process itself rather than manual page discovery.
 
 ## System Overview
 
@@ -37,13 +38,12 @@ The Website Content Scan Automation is a lightweight custom program hosted in Gi
 
 At a high level, the system:
 
-1. Reads public XML sitemap files for configured websites
+1. Reads public XML sitemap files for U.S. Travel websites
 2. Identifies the pages listed in those sitemaps
-3. Compares those pages against rows already in SmartSheet
+3. Compares those pages against rows already in the SmartSheet tracker
 4. Adds newly discovered pages to SmartSheet
-5. Updates page metadata such as Last Updated when available
-6. Marks rows as expired when pages are no longer found
-7. Publishes a simple dashboard so staff can confirm status and run the process manually when needed
+5. Updates page metadata such as Last Updated or expired pages
+6. Publishes a simple dashboard so staff can confirm status of the automation and run the process manually when needed
 
 ## Current Hosting and Ownership Note
 
@@ -51,7 +51,7 @@ The original version of this automation was built in Gabriel Citeli’s personal
 
 If the tool is approved for continuing team use, it should be forked or transferred into a U.S. Travel-managed GitHub repository or organization account so that:
 
-- the system is not dependent on an individual employee account
+- the system is not dependent on an unmanaged account
 - repository access can be managed institutionally
 - credentials and maintenance responsibility can be owned by the organization
 
@@ -62,12 +62,12 @@ The automation was designed to keep scope narrow and limit the amount of sensiti
 Key points:
 
 - It reads only public website sitemap files.
-- It does not require website admin credentials.
+- It does not require U.S. Travel website admin credentials.
 - It does not access private website content.
 - It writes to SmartSheet through the SmartSheet API.
 - The SmartSheet API token is not stored in code.
 - SmartSheet credentials are stored in GitHub Actions secrets.
-- Access to the repository controls who can manage the workflow and view or update the automation.
+- Access to the GitHub repository controls who can manage the workflow and view or update the automation.
 
 This means the tool primarily acts as a bridge between public website sitemap data and an internal SmartSheet used for operational tracking.
 
@@ -95,8 +95,6 @@ This means the tool primarily acts as a bridge between public website sitemap da
 
 I would not describe the tool as maintenance-free, but it was intentionally designed to be low-maintenance and narrow in scope.
 
-A more accurate description is:
-
 - it is a relatively simple, purpose-built automation
 - it uses standard GitHub Actions workflow patterns
 - it uses a single SmartSheet API integration
@@ -104,7 +102,8 @@ A more accurate description is:
 - user-facing documentation has already been written to support day-to-day operation
 - technical maintainer documentation and backup guidance also exist in the repository
 
-The intent is not to leave behind an undocumented custom script, but rather a small operational tool with written instructions for both users and maintainers.
+The intent is not to leave behind an undocumented custom script, but rather a small operational tool with written instructions for users.
+The program was entirely generated using artificial intelligence tools.
 
 ## User Support Readiness
 
@@ -138,4 +137,4 @@ We are seeking either:
 
 This automation supports an existing business need: maintaining an accurate SmartSheet inventory of website content for review. It reduces manual work, improves consistency, and helps ensure new or changed pages are not overlooked.
 
-If approved, the next logical step would be to move the repository into a U.S. Travel-managed GitHub location and continue using the existing user guide and maintenance materials to support the team going forward.
+If approved, the next logical step would be to move the repository into a U.S. Travel-managed GitHub location and continue using the existing user guide and maintenance materials to support the team going forward. The user guide is equiped to support this transition, including instructions and prompts for an AI agent or chat to support the transition with little additional support required.
