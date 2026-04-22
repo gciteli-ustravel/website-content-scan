@@ -103,7 +103,7 @@ The automation connects to SmartSheet using an API token stored securely in GitH
 
 1. Log in to SmartSheet and click your profile icon in the top-right corner.
 2. Select **Apps & Integrations**.
-3. Under **API Access**, click **Generate new access token**.
+3. Under **API Access**, click **Generate new access token**. [View SmartSheet Guide]([url](https://developers.smartsheet.com/api/smartsheet/guides/getting-started#generate-an-api-access-token))
 4. Give the token a name (e.g., "Website Content Scan") and confirm.
 5. Copy the token that appears. **This is the only time you will be able to see it.** Paste it somewhere safe temporarily.
 
@@ -332,6 +332,8 @@ Open the Website Content Scan sheet and look for rows with a **Page Status** of 
 2. The SmartSheet API token may have expired, or the SmartSheet Sheet ID may no longer be correct.
 3. To reconnect the automation to SmartSheet, follow the step-by-step instructions in [Set Up SmartSheet Credentials](#set-up-smartsheet-credentials).
 4. If the issue persists after reconnecting the credentials, I recommend using an AI agent to help resolve the issue (see the section on Maintaining this Automation).
+
+Reference SmartSheet API documentation: https://developers.smartsheet.com/api/smartsheet/introduction
 
 ---
 
