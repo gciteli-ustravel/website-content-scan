@@ -11,7 +11,7 @@ body:
 
         Steps:
         1. Open https://www.ipw.com/sitemap.xml in your browser.
-        2. Save the file to your computer as `sitemap.xml`.
+        2. In Chrome, use File > Save Page As and save the file to your computer as `sitemap.xml`.
         3. Drag that file into this issue so GitHub uploads it.
         4. Submit the issue.
 
