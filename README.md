@@ -2,6 +2,12 @@
 
 This repo powers the automation that scans website sitemaps and updates the Website Content Scan in Smartsheet.
 
+## Internal Use
+
+This repository is intended for internal organizational use. It was originally authored by Gabriel Citeli and is intended to be maintained within a U.S. Travel-managed GitHub repository rather than a personal account.
+
+The implementation was developed by Gabriel Citeli with extensive AI-assisted code generation and iteration using Claude Code (Anthropic) and Codex (OpenAI).
+
 ## Where To Edit Things
 
 - `sites.yml`: add sites, update sitemap URLs, and manage excluded sections
