@@ -359,7 +359,7 @@
         }).join("");
       }
 
-      fetch("./status.json")
+      fetch(`./status.json?ts=${Date.now()}`, { cache: "no-store" })
         .then((response) => response.json())
         .then((status) => {
           document.getElementById("last-run-at").textContent = formatTimestamp(status.last_run_at);
@@ -380,7 +380,7 @@
           document.getElementById("message").textContent = "The dashboard status file could not be loaded yet.";
         });
 
-      fetch("./sites-summary.json")
+      fetch(`./sites-summary.json?ts=${Date.now()}`, { cache: "no-store" })
         .then((response) => response.json())
         .then((summary) => renderSites(summary))
         .catch(() => renderSites(null));
