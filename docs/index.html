@@ -176,10 +176,40 @@
         color: var(--accent);
         word-break: break-word;
       }
+      .origin-banner {
+        background: #fef3cd;
+        border: 1px solid #e8c84a;
+        border-radius: 14px;
+        padding: 14px 18px;
+        margin-bottom: 18px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      .origin-banner a {
+        color: var(--accent);
+      }
+      .page-footer {
+        margin-top: 32px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.88rem;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <main>
+      <!--
+        ORIGIN BANNER — Safe to delete once this repo has been forked to its
+        permanent organization account. This banner only appears when the
+        dashboard is served from gzciteli.github.io (the original personal
+        repo). It is hidden by default and shown via JavaScript below.
+      -->
+      <div class="origin-banner" id="origin-banner" hidden>
+        <strong>Heads up:</strong> This dashboard is running from Gabriel Citeli's personal GitHub account. This was the original setup repo (Intern 2026). If you are the current owner or team administrator of this automation, you should be viewing a forked version of this repository, not this one.
+      </div>
+
       <section class="intro">
         <div class="eyebrow">Sitemap Automation</div>
         <h1>Sitemap Automation</h1>
@@ -256,6 +286,10 @@
           </div>
         </section>
       </div>
+
+      <footer class="page-footer">
+        Created by Gabriel Citeli, Intern 2026. Built with AI.
+      </footer>
     </main>
 
     <dialog id="added-pages-dialog">
@@ -282,6 +316,11 @@
         document.getElementById("workflow-link").href = `${base}/actions/workflows/update-website-content-scan.yml`;
         document.getElementById("ipw-upload-link").href = `${base}/issues/new?template=ipw-sitemap-upload.yml`;
         document.getElementById("sites-yml-link").href = `${base}/blob/main/sites.yml`;
+        // Show the origin banner only on the personal setup repo.
+        // Once forked to the permanent org, the banner will not appear there.
+        if (org === "gzciteli") {
+          document.getElementById("origin-banner").hidden = false;
+        }
       })();
 
       let latestAddedPages = [];
