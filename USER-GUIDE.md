@@ -140,7 +140,7 @@ After any run, check the **Smartsheet connection** card on the dashboard:
 - **Needs attention** — the connection check failed; new pages found during the scan may not have been written to SmartSheet
 - **Not checked yet** — no run has occurred since the system was last reset
 
-If the connection shows **Needs attention**, see the [Troubleshooting](#7-troubleshooting) section.
+If the connection shows **Needs attention**, see the [Troubleshooting](#6-troubleshooting) section.
 
 ---
 
@@ -249,7 +249,7 @@ If a page that was previously in SmartSheet is no longer found in the sitemap, i
 
 ---
 
-## 4. How to Verify It Worked
+## 5. How to Verify It Worked
 
 After a workflow run completes, use the following checks to confirm it succeeded.
 
@@ -277,7 +277,7 @@ Open the Website Content Scan sheet and look for rows with a **Page Status** of 
 ---
 
 
-## 5. Troubleshooting
+## 6. Troubleshooting
 
 ### The workflow failed in GitHub Actions
 
@@ -340,7 +340,7 @@ Wait one to two minutes and refresh the page. The dashboard is published by GitH
 
 ---
 
-## 6. Maintenance / Updating the System
+## 7. Maintenance / Updating the System
 
 **A note on AI assistance:** Most maintenance tasks in this section can be handled with the help of an AI assistant such as ChatGPT or Claude. You do not need to understand the technical details — describe what you want to do and share the relevant file contents, and the assistant can prepare the changes for you to apply through the GitHub web interface. The Appendix includes a section with technical context written specifically to support this kind of AI-assisted maintenance.
 
@@ -366,7 +366,7 @@ This backup is not part of the normal workflow and is intended only for emergenc
 
 ---
 
-## 7. Best Practices
+## 8. Best Practices
 
 **Let the schedule do the work.** The automation runs weekly automatically. Before triggering a manual run, check the **Next automatic fetch** time on the dashboard. If the scheduled run is within a day or two, it is usually better to wait.
 
@@ -382,7 +382,7 @@ This backup is not part of the normal workflow and is intended only for emergenc
 
 ---
 
-## 8. Appendix
+## 9. Appendix
 
 ### Quick Reference — Where to Find Things
 
