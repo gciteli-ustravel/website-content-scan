@@ -4,9 +4,9 @@ This repo powers the automation that scans website sitemaps and updates the Webs
 
 ## Internal Use
 
-This repository is intended for internal organizational use. It was originally authored by Gabriel Citeli and is intended to be maintained within a U.S. Travel-managed GitHub repository rather than a personal account.
+This repository is intended for internal organizational use at U.S. Travel Association. It was originally authored by Gabriel Citeli 2026 and is intended to be maintained within a U.S. Travel-managed GitHub repository.
 
-The implementation was developed by Gabriel Citeli with extensive AI-assisted code generation and iteration using Claude Code (Anthropic) and Codex (OpenAI).
+The implementation was developed by Gabriel Citeli with extensive AI-assisted code generation and iteration using Codex (OpenAI) and Claude Code (Anthropic).
 
 ## Where To Edit Things
 
@@ -23,6 +23,8 @@ Most users only need these three things:
 1. Open the GitHub Actions workflow called **Website Content Scan Admin** to run the update.
 2. Edit `sites.yml` when sections should be included or excluded from the scan, or ask an AI agent to make that change for you.
 3. Use the IPW sitemap upload form if IPW blocks the automated fetch.
+
+A detailed user guide is included in this repository. Basic guidance and operating procesures are to be housed within the Marketing and Digital SOP SharePoint.
 
 ## Exclusions Live In `sites.yml`
 
