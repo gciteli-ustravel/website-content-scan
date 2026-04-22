@@ -234,6 +234,9 @@
             <article class="status-card">
               <div class="eyebrow">Smartsheet connection</div>
               <div class="value" id="smartsheet-connection">Loading…</div>
+              <div class="actions">
+                <a class="button secondary" id="smartsheet-help-link" href="https://github.com/gzciteli/website-content-scan/blob/main/USER-GUIDE.md#the-smartsheet-connection-shows-needs-attention" target="_blank" rel="noreferrer" hidden>Open SmartSheet help</a>
+              </div>
             </article>
             <article class="status-card">
               <div class="eyebrow">Pages added last run</div>
@@ -316,6 +319,7 @@
         document.getElementById("workflow-link").href = `${base}/actions/workflows/update-website-content-scan.yml`;
         document.getElementById("ipw-upload-link").href = `${base}/issues/new?template=ipw-sitemap-upload.yml`;
         document.getElementById("sites-yml-link").href = `${base}/blob/main/sites.yml`;
+        document.getElementById("smartsheet-help-link").href = `${base}/blob/main/USER-GUIDE.md#the-smartsheet-connection-shows-needs-attention`;
         // Show the origin banner only on the personal setup repo.
         // Once forked to the permanent org, the banner will not appear there.
         if (org === "gzciteli") {
@@ -336,6 +340,11 @@
         if (value === true) return "Connected";
         if (value === false) return "Needs attention";
         return "Not checked yet";
+      }
+
+      function setSmartsheetHelpLink(value) {
+        const link = document.getElementById("smartsheet-help-link");
+        link.hidden = value !== false;
       }
 
       function nextScheduledFetch() {
@@ -443,6 +452,7 @@
           document.getElementById("next-auto-fetch").textContent = nextScheduledFetch();
           document.getElementById("last-run-result").textContent = status.last_run_result || "Not available yet";
           document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
+          setSmartsheetHelpLink(status.smartsheet_connection_ok);
           setAddedPages(status);
           document.getElementById("last-upload-at").textContent = formatTimestamp(status.last_upload_processed_at);
           document.getElementById("last-upload-result").textContent = status.last_upload_result || "Not available yet";
@@ -453,6 +463,7 @@
           document.getElementById("next-auto-fetch").textContent = nextScheduledFetch();
           document.getElementById("last-run-result").textContent = "Status file not available";
           document.getElementById("smartsheet-connection").textContent = "Status file not available";
+          setSmartsheetHelpLink(null);
           document.getElementById("pages-added").textContent = "Status file not available";
           document.getElementById("last-upload-at").textContent = "Status file not available";
           document.getElementById("last-upload-result").textContent = "Status file not available";

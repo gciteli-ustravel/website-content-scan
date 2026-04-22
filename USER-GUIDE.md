@@ -95,7 +95,7 @@ Open the dashboard at **https://{your profile}.github.io/website-content-scan/**
 
 If all three look healthy, the system is working and you can proceed to operate it normally. If any card shows an error or an outdated date, see [Troubleshooting](#6-troubleshooting).
 
-**Step 3 — Set up SmartSheet credentials (only needed if starting fresh)**
+### Set Up SmartSheet Credentials
 
 The automation connects to SmartSheet using an API token stored securely in GitHub. If you are taking over a working system where the token was already saved, it transfers with the repository and you do not need to do anything. If you are setting up from scratch or the credentials have been lost, follow these steps.
 
@@ -329,8 +329,9 @@ Open the Website Content Scan sheet and look for rows with a **Page Status** of 
 **What to do:**
 
 1. Confirm the Website Content Scan sheet still exists and has not been renamed, moved, or deleted.
-2. The SmartSheet API token may have expired. This is stored in the repository's GitHub Secrets and requires someone with access to the repo to fix.
-3. If the issue persists, I recommend using an AI agent to help resolve the issue (see the section on Maintaining this Automation).
+2. The SmartSheet API token may have expired, or the SmartSheet Sheet ID may no longer be correct.
+3. To reconnect the automation to SmartSheet, follow the step-by-step instructions in [Set Up SmartSheet Credentials](#set-up-smartsheet-credentials).
+4. If the issue persists after reconnecting the credentials, I recommend using an AI agent to help resolve the issue (see the section on Maintaining this Automation).
 
 ---
 
