@@ -444,6 +444,43 @@ def smartsheet_value_cell(
     return cell
 
 
+def ensure_picklist_options(
+    base_url: str,
+    token: str,
+    sheet_id: str,
+    column: dict[str, Any],
+    required_options: list[str],
+) -> None:
+    if column.get("type") not in {"PICKLIST", "MULTI_PICKLIST"}:
+        return
+
+    existing_options = [str(option) for option in column.get("options", [])]
+    merged_options = existing_options[:]
+    changed = False
+    for option in required_options:
+        if option not in merged_options:
+            merged_options.append(option)
+            changed = True
+
+    if not changed:
+        return
+
+    payload: dict[str, Any] = {
+        "title": column["title"],
+        "type": column["type"],
+        "options": merged_options,
+    }
+    if "validation" in column:
+        payload["validation"] = column["validation"]
+
+    smartsheet_request(
+        "PUT",
+        f"{base_url}/sheets/{sheet_id}/columns/{column['id']}",
+        token,
+        payload,
+    )
+
+
 def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_status: str) -> dict[str, int]:
     token = os.environ.get("SMARTSHEET_ACCESS_TOKEN")
     if not token:
@@ -455,6 +492,19 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
     missing = [name for name in REQUIRED_COLUMNS if name not in columns]
     if missing:
         raise ValueError(f"Missing Smartsheet columns: {', '.join(missing)}")
+
+    page_status_column = next((column for column in sheet.get("columns", []) if column.get("title") == "Page Status"), None)
+    if page_status_column:
+        ensure_picklist_options(
+            base_url,
+            token,
+            sheet_id,
+            page_status_column,
+            [DEFAULT_NEW_STATUS, expired_status],
+        )
+        # Refresh the sheet metadata so subsequent row updates use the latest column state.
+        sheet = smartsheet_request("GET", f"{base_url}/sheets/{sheet_id}", token)
+        columns = smartsheet_headers(sheet)
 
     existing: dict[str, dict[str, Any]] = {}
     for row in sheet.get("rows", []):
