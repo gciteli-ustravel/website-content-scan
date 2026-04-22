@@ -119,11 +119,6 @@
         margin: 0 8px 8px 0;
         font-size: 0.95rem;
       }
-      .meta {
-        font-size: 0.92rem;
-        color: var(--muted);
-        margin-top: 10px;
-      }
     </style>
   </head>
   <body>
@@ -154,9 +149,6 @@
           <div class="actions">
             <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml" target="_blank" rel="noreferrer">Open the workflow</a>
           </div>
-          <p class="meta" id="workflow-identity">Workflow version: loading…</p>
-          <p class="meta" id="workflow-ref">Branch: loading…</p>
-          <p class="meta" id="workflow-sha">Commit: loading…</p>
           <p id="message" class="inline-note">Loading latest workflow message…</p>
         </section>
 
@@ -245,9 +237,6 @@
           document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
           document.getElementById("last-upload-at").textContent = formatTimestamp(status.last_upload_processed_at);
           document.getElementById("last-upload-result").textContent = status.last_upload_result || "Not available yet";
-          document.getElementById("workflow-identity").textContent = `Workflow version: ${status.workflow_version || "Not available yet"}`;
-          document.getElementById("workflow-ref").textContent = `Branch: ${status.workflow_ref || "Not available yet"}`;
-          document.getElementById("workflow-sha").textContent = `Commit: ${status.workflow_sha ? status.workflow_sha.slice(0, 7) : "Not available yet"}`;
           document.getElementById("message").textContent = status.message || "No workflow message has been recorded yet.";
         })
         .catch(() => {
@@ -256,9 +245,6 @@
           document.getElementById("smartsheet-connection").textContent = "Status file not available";
           document.getElementById("last-upload-at").textContent = "Status file not available";
           document.getElementById("last-upload-result").textContent = "Status file not available";
-          document.getElementById("workflow-identity").textContent = "Workflow version: status file not available";
-          document.getElementById("workflow-ref").textContent = "Branch: status file not available";
-          document.getElementById("workflow-sha").textContent = "Commit: status file not available";
           document.getElementById("message").textContent = "The dashboard status file could not be loaded yet.";
         });
 
