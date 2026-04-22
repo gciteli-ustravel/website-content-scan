@@ -429,6 +429,13 @@ def smartsheet_cell(row: dict[str, Any], column_id: int) -> Any:
     return None
 
 
+def smartsheet_value_cell(column_id: int, value: str, *, strict: bool | None = None) -> dict[str, Any]:
+    cell: dict[str, Any] = {"columnId": column_id, "value": value}
+    if strict is not None:
+        cell["strict"] = strict
+    return cell
+
+
 def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_status: str) -> dict[str, int]:
     token = os.environ.get("SMARTSHEET_ACCESS_TOKEN")
     if not token:
@@ -474,13 +481,13 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
                 updated_last_updated += 1
         else:
             cells = [
-                {"columnId": columns["Site"], "value": page.site},
-                {"columnId": columns["Page"], "value": page.page},
-                {"columnId": columns["Sub-Page"], "value": page.sub_page},
-                {"columnId": columns["Page Status"], "value": DEFAULT_NEW_STATUS},
+                smartsheet_value_cell(columns["Site"], page.site),
+                smartsheet_value_cell(columns["Page"], page.page),
+                smartsheet_value_cell(columns["Sub-Page"], page.sub_page),
+                smartsheet_value_cell(columns["Page Status"], DEFAULT_NEW_STATUS, strict=False),
             ]
             if page.last_updated:
-                cells.append({"columnId": columns["Last Updated"], "value": page.last_updated})
+                cells.append(smartsheet_value_cell(columns["Last Updated"], page.last_updated))
             rows_to_add.append(
                 {
                     "toBottom": True,
@@ -493,7 +500,7 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
             rows_to_update.append(
                 {
                     "id": row["id"],
-                    "cells": [{"columnId": columns["Page Status"], "value": expired_status}],
+                    "cells": [smartsheet_value_cell(columns["Page Status"], expired_status, strict=False)],
                 }
             )
             expired += 1
