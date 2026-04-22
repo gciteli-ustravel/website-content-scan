@@ -201,9 +201,16 @@ The workflow is the engine that runs the scan. It lives under the **Actions** ta
 
 ---
 
-### `sites.yml`
+### `sites.yml` — Adding Sites and Managing Exclusions
 
-This file controls which sites are scanned and which sections are excluded. It is the only file most users ever need to edit. It lives in the root of the repository.
+This file controls which sites are scanned and which sections are excluded. It is the only file most users ever need to edit. It lives in the root of the repository, and the dashboard includes a direct **Open sites.yml** link in the Sites and exclusions section.
+
+**To add a new website to the scan** or change what sections are excluded, you have two options:
+
+- **Edit directly in GitHub:** Open `sites.yml` using the link on the dashboard. On the file page, click the **pencil icon** (Edit this file) in the top-right corner of the file view. Make your changes, then scroll down and click **Commit changes**. Use the default branch option and add a brief description of what you changed.
+- **Ask an AI assistant:** Paste the contents of `sites.yml` into a conversation with an AI assistant (such as ChatGPT or Claude) and describe what you want — for example, "add a site called example.org with sitemap at https://example.org/sitemap.xml and exclude /news." The assistant will give you updated file contents to paste back in.
+
+Changes take effect on the next workflow run.
 
 Each entry in the file can include:
 
