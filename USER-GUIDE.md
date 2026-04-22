@@ -81,19 +81,6 @@ GitHub Pages is not automatically enabled on a forked repository. The dashboard 
 
 After a minute or two, the dashboard will be published at **https://{your-org}.github.io/website-content-scan/**. GitHub will show a confirmation banner on the Pages settings screen once it is live.
 
-**Step 1b — Update the dashboard button links (fork only)**
-
-The dashboard contains buttons that link to the original repository for actions like running the workflow, uploading an IPW sitemap, and viewing `sites.yml`. After a fork, these buttons will still point to the original location and need to be updated.
-
-1. In your forked repository, navigate to **docs/index.html**.
-2. Click the **pencil icon** (Edit this file) in the top-right corner of the file view.
-3. Use **Ctrl+H** (Windows/Linux) or **Command+Option+F** (Mac) to open find and replace.
-4. Find: `gzciteli/website-content-scan`
-5. Replace with: `{your-org}/website-content-scan`
-6. Replace all instances, then scroll down and click **Commit changes**.
-
-There are three buttons affected: Open the workflow, Open IPW upload form, and Open sites.yml. The find-and-replace will update all of them at once.
-
 **Step 2 — Verify the system is running**
 
 Open the dashboard at **https://{your profile}.github.io/website-content-scan/** and confirm:
@@ -547,6 +534,6 @@ If you are guiding a user through GitHub without access to the repository yourse
 - *Adding an exclusion:* Same process — request the current `sites.yml` contents and return the updated file with the new path added under `exclude_paths` for the relevant site.
 - *Fixing a failed run:* Ask the user to open the Actions tab, click the failed run, expand the failed step, and share the error text. Most failures are a transient network timeout (just re-run) or an expired SmartSheet credential (update `SMARTSHEET_ACCESS_TOKEN`).
 - *Updating SmartSheet credentials:* Walk the user through SmartSheet's **Account icon > Apps & Integrations > API Access > Generate new access token**, then through GitHub's **Settings > Secrets and variables > Actions** to update `SMARTSHEET_ACCESS_TOKEN`.
-- *Setting up after a fork:* Enable GitHub Pages via Settings > Pages (deploy from `main`, `/docs`). Then update the hardcoded URLs in `docs/index.html` — use the pencil-icon editor and Ctrl+H / Command+Option+F to find-and-replace `gzciteli/website-content-scan` with the new repo path. Finally, set up GitHub Secrets (`SMARTSHEET_ACCESS_TOKEN` and `SMARTSHEET_SHEET_ID`) in Settings > Secrets and variables > Actions.
+- *Setting up after a fork:* Enable GitHub Pages via Settings > Pages (deploy from `main`, `/docs`). The dashboard button links (Open the workflow, Open IPW upload form, Open sites.yml) update themselves automatically — no manual URL editing needed. Then set up GitHub Secrets (`SMARTSHEET_ACCESS_TOKEN` and `SMARTSHEET_SHEET_ID`) in Settings > Secrets and variables > Actions.
 - *Checking what was added:* Direct the user to the dashboard's **Pages added last run** card and the **See which pages** popup button.
 - *Emergency recovery:* If the normal automation is broken, refer to `MAINTAINERS.md` in the repository. It documents a local Excel-based fallback that a technical maintainer or AI can help execute step by step.
