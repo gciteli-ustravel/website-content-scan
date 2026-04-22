@@ -1,0 +1,23 @@
+# Website Content Scan Checklist
+
+- [ ] The repo root clearly shows `README.md`, `sites.yml`, `manual-sitemaps/`, `CHECKLIST.md`, and `MAINTAINERS.md`.
+- [ ] `sites.yml` is easy to find and clearly explains how exclusions work.
+- [ ] Only one workflow appears in the GitHub Actions tab.
+- [ ] The workflow name is plain English and easy to recognize.
+- [ ] The dashboard opens with a short title and a simple task-based layout.
+- [ ] The dashboard has a workflow section that shows the latest run status.
+- [ ] The dashboard shows how many pages were added in the latest successful run.
+- [ ] The dashboard can open a popup with the list of pages that were added.
+- [ ] The workflow section tells the user to click `Run workflow`.
+- [ ] The workflow button opens in a new tab.
+- [ ] The dashboard includes a direct link to the IPW sitemap.
+- [ ] The dashboard includes a direct link to the IPW sitemap upload form.
+- [ ] The dashboard includes a sites and exclusions section that shows the current scanned sites in a user-friendly format.
+- [ ] The dashboard includes a direct link to `sites.yml`.
+- [ ] The `manual-sitemaps/README.md` file clearly explains why the fallback folder exists.
+- [ ] The IPW upload form pre-fills the title and makes notes optional.
+- [ ] Submitting an IPW sitemap issue updates `manual-sitemaps/ipw.com/sitemap.xml`.
+- [ ] A manual workflow run completes and refreshes `docs/status.json`.
+- [ ] A manual workflow run also refreshes `docs/sites-summary.json`.
+- [ ] The main README no longer presents Excel fallback as a normal operating path.
+- [ ] The Excel fallback is only documented in `MAINTAINERS.md`.

@@ -1,0 +1,26 @@
+name: IPW sitemap upload
+description: Submit the latest IPW sitemap file so the automation can use it.
+title: "[IPW Sitemap Upload] "
+labels:
+  - ipw-sitemap-upload
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when IPW blocks the automated sitemap fetch.
+
+        Steps:
+        1. Open https://www.ipw.com/sitemap.xml in your browser.
+        2. In Chrome, use File > Save Page As and save the file to your computer as `sitemap.xml`.
+        3. Drag that file into this issue so GitHub uploads it.
+        4. Submit the issue.
+
+        The title is already filled in for you. You do not need to write a description unless there is something unusual to note.
+
+        The automation will save the uploaded file into the repo and then run the content scan.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional. Most of the time you can leave this blank.
+      placeholder: Optional notes only. Then attach the sitemap file below this form before you submit.

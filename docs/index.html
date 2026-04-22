@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sitemap Automation</title>
+    <style>
+      :root {
+        --bg: #f5efe6;
+        --panel: #fffaf3;
+        --ink: #1f2a30;
+        --muted: #5d6a70;
+        --accent: #0f6d62;
+        --accent-soft: #d6eee7;
+        --line: #d8d0c5;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, #efe5d6 0, transparent 30rem),
+          linear-gradient(180deg, #f7f1e8 0%, #f2ebe2 100%);
+      }
+      main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 28px 18px 40px;
+      }
+      h1, h2, h3 {
+        margin: 0 0 12px;
+      }
+      p {
+        line-height: 1.6;
+        margin: 0 0 14px;
+      }
+      .intro, .section, .status-card, .site-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 12px 30px rgba(31, 42, 48, 0.06);
+      }
+      .intro, .section {
+        padding: 22px;
+      }
+      .intro {
+        margin-bottom: 18px;
+      }
+      .sections {
+        display: grid;
+        gap: 18px;
+      }
+      .status-grid, .site-grid {
+        display: grid;
+        gap: 14px;
+      }
+      .status-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin: 18px 0;
+      }
+      .site-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        margin-top: 18px;
+      }
+      .status-card, .site-card {
+        padding: 18px;
+      }
+      .eyebrow {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin-bottom: 8px;
+      }
+      .value {
+        font-size: 1.08rem;
+        font-weight: 700;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .button {
+        display: inline-block;
+        text-decoration: none;
+        background: var(--accent);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+      .button.secondary {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      ul {
+        margin: 0;
+        padding-left: 20px;
+        line-height: 1.6;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .inline-note {
+        margin-top: 12px;
+        color: var(--muted);
+      }
+      .list-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .pill {
+        display: inline-block;
+        background: #ece5db;
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 6px 10px;
+        margin: 0 8px 8px 0;
+        font-size: 0.95rem;
+      }
+      .ghost-button {
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--accent);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .ghost-button[hidden] {
+        display: none;
+      }
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0;
+        width: min(760px, calc(100vw - 32px));
+        box-shadow: 0 24px 60px rgba(31, 42, 48, 0.18);
+      }
+      dialog::backdrop {
+        background: rgba(31, 42, 48, 0.35);
+      }
+      .dialog-card {
+        padding: 22px;
+        background: var(--panel);
+      }
+      .dialog-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .dialog-close {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .page-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .page-item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+        background: #fff;
+      }
+      .page-item a {
+        color: var(--accent);
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="intro">
+        <div class="eyebrow">Sitemap Automation</div>
+        <h1>Sitemap Automation</h1>
+      </section>
+
+      <div class="sections">
+        <section class="section">
+          <h2>Fetch Sitemaps and Update Content Scan Sheet</h2>
+          <div class="status-grid">
+            <article class="status-card">
+              <div class="eyebrow">Last time it ran</div>
+              <div class="value" id="last-run-at">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Latest result</div>
+              <div class="value" id="last-run-result">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Smartsheet connection</div>
+              <div class="value" id="smartsheet-connection">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Pages added last run</div>
+              <div class="value" id="pages-added">Loading…</div>
+              <div class="actions">
+                <button class="ghost-button" id="view-added-pages" type="button" hidden>See which pages</button>
+              </div>
+            </article>
+          </div>
+          <p>To run it now, open the workflow page and click <strong>Run workflow</strong>.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml" target="_blank" rel="noreferrer">Open the workflow</a>
+          </div>
+          <p id="message" class="inline-note">Loading latest workflow message…</p>
+        </section>
+
+        <section class="section">
+          <h2>Sites and exclusions</h2>
+          <p>These are the sites being checked and the sections that are excluded.</p>
+          <p>Update <strong>sites.yml</strong> or ask an AI agent to do it for you.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml" target="_blank" rel="noreferrer">Open sites.yml</a>
+          </div>
+          <div class="site-grid" id="site-list">
+            <article class="site-card">
+              <div class="value">Loading current sites…</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Manual IPW upload</h2>
+          <p><strong>ipw.com</strong> sometimes cannot be pulled automatically.</p>
+          <p>Open the sitemap, save it, and upload it through the GitHub form. In Chrome, use <strong>File > Save Page As</strong> and save the file as <strong>sitemap.xml</strong>. The title is already filled in. Notes are optional.</p>
+          <div class="status-grid">
+            <article class="status-card">
+              <div class="eyebrow">Last IPW upload processed</div>
+              <div class="value" id="last-upload-at">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Latest upload result</div>
+              <div class="value" id="last-upload-result">Loading…</div>
+            </article>
+          </div>
+          <p>After you submit the form, the automation saves the file and runs the scan again.</p>
+          <div class="actions">
+            <a class="button" href="https://www.ipw.com/sitemap.xml" target="_blank" rel="noreferrer">Open IPW sitemap</a>
+            <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml" target="_blank" rel="noreferrer">Open IPW upload form</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <dialog id="added-pages-dialog">
+      <div class="dialog-card">
+        <div class="dialog-header">
+          <div>
+            <div class="eyebrow">Latest run</div>
+            <h2>Pages added to Smartsheet</h2>
+          </div>
+          <button class="dialog-close" id="close-added-pages" type="button">Close</button>
+        </div>
+        <p id="added-pages-summary" class="muted">No new pages were recorded.</p>
+        <div class="page-list" id="added-pages-list"></div>
+      </div>
+    </dialog>
+
+    <script>
+      let latestAddedPages = [];
+
+      function formatTimestamp(value) {
+        if (!value) return "Not available yet";
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return value;
+        return parsed.toLocaleString();
+      }
+
+      function textForConnection(value) {
+        if (value === true) return "Connected";
+        if (value === false) return "Needs attention";
+        return "Not checked yet";
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function setAddedPages(status) {
+        const countNode = document.getElementById("pages-added");
+        const button = document.getElementById("view-added-pages");
+        const summary = status && status.last_run_summary;
+        const isLatestRunSuccessful = status && status.last_run_result === "success";
+
+        latestAddedPages = isLatestRunSuccessful && summary && Array.isArray(summary.added_pages)
+          ? summary.added_pages
+          : [];
+
+        if (!isLatestRunSuccessful) {
+          countNode.textContent = "Not available";
+          button.hidden = true;
+          return;
+        }
+
+        countNode.textContent = String(summary && typeof summary.added === "number" ? summary.added : latestAddedPages.length);
+        button.hidden = latestAddedPages.length === 0;
+      }
+
+      function openAddedPagesDialog() {
+        const dialog = document.getElementById("added-pages-dialog");
+        const summary = document.getElementById("added-pages-summary");
+        const list = document.getElementById("added-pages-list");
+
+        if (!latestAddedPages.length) {
+          summary.textContent = "No new pages were added in the latest successful run.";
+          list.innerHTML = "";
+        } else {
+          summary.textContent = `${latestAddedPages.length} page${latestAddedPages.length === 1 ? "" : "s"} added in the latest successful run.`;
+          list.innerHTML = latestAddedPages.map((page) => `
+            <article class="page-item">
+              <div class="list-title">${escapeHtml(page.site)} ${escapeHtml(page.page)}${page.sub_page ? escapeHtml(page.sub_page) : ""}</div>
+              <a href="${escapeHtml(page.url)}" target="_blank" rel="noreferrer">${escapeHtml(page.url)}</a>
+            </article>
+          `).join("");
+        }
+
+        dialog.showModal();
+      }
+
+      function renderSites(summary) {
+        const container = document.getElementById("site-list");
+        if (!summary || !Array.isArray(summary.sites) || summary.sites.length === 0) {
+          container.innerHTML = '<article class="site-card"><div class="value">No site summary is available yet.</div></article>';
+          return;
+        }
+
+        container.innerHTML = summary.sites.map((site) => {
+          const exclusions = site.excluded_sections && site.excluded_sections.length
+            ? site.excluded_sections.map((item) => `<span class="pill">${item}</span>`).join("")
+            : '<span class="muted">No excluded sections</span>';
+          const fallback = site.uses_manual_fallback
+            ? `<p class="inline-note">Manual fallback file: ${site.manual_fallback_file}</p>`
+            : "";
+          return `
+            <article class="site-card">
+              <h3>${site.name}</h3>
+              <p class="muted">Sitemap: ${site.sitemap}</p>
+              <div class="list-title">Excluded sections</div>
+              <div>${exclusions}</div>
+              ${fallback}
+            </article>
+          `;
+        }).join("");
+      }
+
+      fetch("./status.json")
+        .then((response) => response.json())
+        .then((status) => {
+          document.getElementById("last-run-at").textContent = formatTimestamp(status.last_run_at);
+          document.getElementById("last-run-result").textContent = status.last_run_result || "Not available yet";
+          document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
+          setAddedPages(status);
+          document.getElementById("last-upload-at").textContent = formatTimestamp(status.last_upload_processed_at);
+          document.getElementById("last-upload-result").textContent = status.last_upload_result || "Not available yet";
+          document.getElementById("message").textContent = status.message || "No workflow message has been recorded yet.";
+        })
+        .catch(() => {
+          document.getElementById("last-run-at").textContent = "Status file not available";
+          document.getElementById("last-run-result").textContent = "Status file not available";
+          document.getElementById("smartsheet-connection").textContent = "Status file not available";
+          document.getElementById("pages-added").textContent = "Status file not available";
+          document.getElementById("last-upload-at").textContent = "Status file not available";
+          document.getElementById("last-upload-result").textContent = "Status file not available";
+          document.getElementById("message").textContent = "The dashboard status file could not be loaded yet.";
+        });
+
+      fetch("./sites-summary.json")
+        .then((response) => response.json())
+        .then((summary) => renderSites(summary))
+        .catch(() => renderSites(null));
+
+      document.getElementById("view-added-pages").addEventListener("click", openAddedPagesDialog);
+      document.getElementById("close-added-pages").addEventListener("click", () => {
+        document.getElementById("added-pages-dialog").close();
+      });
+    </script>
+  </body>
+</html>

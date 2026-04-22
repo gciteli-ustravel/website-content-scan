@@ -361,6 +361,16 @@ def row_url_key(row: int, ws: Any, headers: dict[str, int]) -> str:
     return f"{strip_www(str(site))}{path}".lower()
 
 
+def page_summary(page: SitemapPage) -> dict[str, str]:
+    return {
+        "url": page.url,
+        "site": page.site,
+        "page": page.page,
+        "sub_page": page.sub_page,
+        "last_updated": page.last_updated,
+    }
+
+
 def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPage], expired_status: str) -> dict[str, int]:
     workbook = openpyxl.load_workbook(input_path)
     ws = workbook[SHEET_NAME] if SHEET_NAME in workbook.sheetnames else workbook.active
@@ -373,6 +383,7 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
             existing[key] = row
 
     added = updated = expired = 0
+    added_pages: list[dict[str, str]] = []
     for key, page in sorted(pages.items(), key=lambda item: item[0]):
         if key in existing:
             ws.cell(row=existing[key], column=headers["Last Updated"], value=page.last_updated or None)
@@ -386,6 +397,7 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
         ws.cell(row=new_row, column=headers["Last Updated"], value=page.last_updated or None)
         ws.cell(row=new_row, column=headers["Page Status"], value=DEFAULT_NEW_STATUS)
         added += 1
+        added_pages.append(page_summary(page))
 
     for key, row in existing.items():
         if key not in pages:
@@ -394,7 +406,12 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     workbook.save(output_path)
-    return {"added": added, "updated_last_updated": updated, "expired": expired}
+    return {
+        "added": added,
+        "added_pages": added_pages,
+        "updated_last_updated": updated,
+        "expired": expired,
+    }
 
 
 def smartsheet_headers(sheet: dict[str, Any]) -> dict[str, int]:
@@ -412,7 +429,13 @@ def smartsheet_request(method: str, url: str, token: str, payload: Any | None = 
         },
         json=payload,
     )
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as exc:
+        detail = response.text.strip()
+        if detail:
+            raise requests.HTTPError(f"{exc} | Smartsheet response: {detail}", response=response) from exc
+        raise
     return response.json() if response.content else {}
 
 
@@ -421,6 +444,58 @@ def smartsheet_cell(row: dict[str, Any], column_id: int) -> Any:
         if cell.get("columnId") == column_id:
             return cell.get("value")
     return None
+
+
+def smartsheet_value_cell(
+    column_id: int,
+    value: str,
+    *,
+    strict: bool | None = None,
+    override_validation: bool | None = None,
+) -> dict[str, Any]:
+    cell: dict[str, Any] = {"columnId": column_id, "value": value}
+    if strict is not None:
+        cell["strict"] = strict
+    if override_validation is not None:
+        cell["overrideValidation"] = override_validation
+    return cell
+
+
+def ensure_picklist_options(
+    base_url: str,
+    token: str,
+    sheet_id: str,
+    column: dict[str, Any],
+    required_options: list[str],
+) -> None:
+    if column.get("type") not in {"PICKLIST", "MULTI_PICKLIST"}:
+        return
+
+    existing_options = [str(option) for option in column.get("options", [])]
+    merged_options = existing_options[:]
+    changed = False
+    for option in required_options:
+        if option not in merged_options:
+            merged_options.append(option)
+            changed = True
+
+    if not changed:
+        return
+
+    payload: dict[str, Any] = {
+        "title": column["title"],
+        "type": column["type"],
+        "options": merged_options,
+    }
+    if "validation" in column:
+        payload["validation"] = column["validation"]
+
+    smartsheet_request(
+        "PUT",
+        f"{base_url}/sheets/{sheet_id}/columns/{column['id']}",
+        token,
+        payload,
+    )
 
 
 def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_status: str) -> dict[str, int]:
@@ -434,6 +509,19 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
     missing = [name for name in REQUIRED_COLUMNS if name not in columns]
     if missing:
         raise ValueError(f"Missing Smartsheet columns: {', '.join(missing)}")
+
+    page_status_column = next((column for column in sheet.get("columns", []) if column.get("title") == "Page Status"), None)
+    if page_status_column:
+        ensure_picklist_options(
+            base_url,
+            token,
+            sheet_id,
+            page_status_column,
+            [DEFAULT_NEW_STATUS, expired_status],
+        )
+        # Refresh the sheet metadata so subsequent row updates use the latest column state.
+        sheet = smartsheet_request("GET", f"{base_url}/sheets/{sheet_id}", token)
+        columns = smartsheet_headers(sheet)
 
     existing: dict[str, dict[str, Any]] = {}
     for row in sheet.get("rows", []):
@@ -450,38 +538,62 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
         existing[key] = row
 
     rows_to_add = []
+    added_pages: list[dict[str, str]] = []
     rows_to_update = []
+    updated_last_updated = 0
+    expired = 0
 
     for key, page in sorted(pages.items(), key=lambda item: item[0]):
         if key in existing:
-            rows_to_update.append(
-                {
-                    "id": existing[key]["id"],
-                    "cells": [{"columnId": columns["Last Updated"], "value": page.last_updated or ""}],
-                }
-            )
+            # Do not send blank strings to a date column. If the sitemap omits lastmod,
+            # leave the current Smartsheet value as-is.
+            if page.last_updated:
+                rows_to_update.append(
+                    {
+                        "id": existing[key]["id"],
+                        "cells": [{"columnId": columns["Last Updated"], "value": page.last_updated}],
+                    }
+                )
+                updated_last_updated += 1
         else:
+            cells = [
+                smartsheet_value_cell(columns["URL"], page.url),
+                smartsheet_value_cell(columns["Site"], page.site),
+                smartsheet_value_cell(columns["Page"], page.page),
+                smartsheet_value_cell(columns["Sub-Page"], page.sub_page),
+                smartsheet_value_cell(
+                    columns["Page Status"],
+                    DEFAULT_NEW_STATUS,
+                    strict=False,
+                    override_validation=True,
+                ),
+            ]
+            if page.last_updated:
+                cells.append(smartsheet_value_cell(columns["Last Updated"], page.last_updated))
             rows_to_add.append(
                 {
                     "toBottom": True,
-                    "cells": [
-                        {"columnId": columns["Site"], "value": page.site},
-                        {"columnId": columns["Page"], "value": page.page},
-                        {"columnId": columns["Sub-Page"], "value": page.sub_page},
-                        {"columnId": columns["Last Updated"], "value": page.last_updated or ""},
-                        {"columnId": columns["Page Status"], "value": DEFAULT_NEW_STATUS},
-                    ],
+                    "cells": cells,
                 }
             )
+            added_pages.append(page_summary(page))
 
     for key, row in existing.items():
         if key not in pages:
             rows_to_update.append(
                 {
                     "id": row["id"],
-                    "cells": [{"columnId": columns["Page Status"], "value": expired_status}],
+                    "cells": [
+                        smartsheet_value_cell(
+                            columns["Page Status"],
+                            expired_status,
+                            strict=False,
+                            override_validation=True,
+                        )
+                    ],
                 }
             )
+            expired += 1
 
     if rows_to_add:
         smartsheet_request("POST", f"{base_url}/sheets/{sheet_id}/rows", token, rows_to_add)
@@ -492,8 +604,9 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
 
     return {
         "added": len(rows_to_add),
-        "updated_last_updated": len(pages) - len(rows_to_add),
-        "expired": sum(1 for key in existing if key not in pages),
+        "added_pages": added_pages,
+        "updated_last_updated": updated_last_updated,
+        "expired": expired,
     }
 
 
@@ -504,6 +617,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--excel-input", type=Path, help="Excel export to update as a fallback workflow")
     parser.add_argument("--excel-output", type=Path, help="Where to write the updated Excel workbook")
     parser.add_argument("--smartsheet-sheet-id", default=os.environ.get("SMARTSHEET_SHEET_ID"))
+    parser.add_argument("--summary-output", type=Path, help="Optional path to write the JSON run summary")
     return parser.parse_args()
 
 
@@ -515,13 +629,18 @@ def main() -> int:
         output = args.excel_output or args.excel_input.with_name(f"{args.excel_input.stem}.updated.xlsx")
         summary = update_excel(args.excel_input, output, pages, args.expired_status)
         summary["excel_output"] = str(output)
+        summary["mode"] = "excel"
     elif args.smartsheet_sheet_id:
         summary = update_smartsheet(args.smartsheet_sheet_id, pages, args.expired_status)
+        summary["mode"] = "smartsheet"
     else:
         raise SystemExit("Provide --excel-input or SMARTSHEET_SHEET_ID/--smartsheet-sheet-id")
 
     summary["sitemap_pages_found"] = len(pages)
     summary["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
+    if args.summary_output:
+        args.summary_output.parent.mkdir(parents=True, exist_ok=True)
+        args.summary_output.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0
 

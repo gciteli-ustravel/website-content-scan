@@ -1,0 +1,37 @@
+{
+  "sites": [
+    {
+      "name": "ustravel.org",
+      "sitemap": "https://www.ustravel.org/sitemap.xml",
+      "excluded_sections": [
+        "/",
+        "/news",
+        "/press",
+        "/research"
+      ],
+      "uses_manual_fallback": false,
+      "manual_fallback_file": "",
+      "allows_sitemap_errors": false
+    },
+    {
+      "name": "ipw.com",
+      "sitemap": "https://www.ipw.com/sitemap.xml",
+      "excluded_sections": [],
+      "uses_manual_fallback": true,
+      "manual_fallback_file": "manual-sitemaps/ipw.com/sitemap.xml",
+      "allows_sitemap_errors": true
+    },
+    {
+      "name": "esto.ustravel.org",
+      "sitemap": "https://www.esto.ustravel.org/sitemap.xml",
+      "excluded_sections": [
+        "/attendees",
+        "/events",
+        "/speakers"
+      ],
+      "uses_manual_fallback": false,
+      "manual_fallback_file": "",
+      "allows_sitemap_errors": false
+    }
+  ]
+}
