@@ -504,6 +504,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--excel-input", type=Path, help="Excel export to update as a fallback workflow")
     parser.add_argument("--excel-output", type=Path, help="Where to write the updated Excel workbook")
     parser.add_argument("--smartsheet-sheet-id", default=os.environ.get("SMARTSHEET_SHEET_ID"))
+    parser.add_argument("--summary-output", type=Path, help="Optional path to write the JSON run summary")
     return parser.parse_args()
 
 
@@ -515,13 +516,18 @@ def main() -> int:
         output = args.excel_output or args.excel_input.with_name(f"{args.excel_input.stem}.updated.xlsx")
         summary = update_excel(args.excel_input, output, pages, args.expired_status)
         summary["excel_output"] = str(output)
+        summary["mode"] = "excel"
     elif args.smartsheet_sheet_id:
         summary = update_smartsheet(args.smartsheet_sheet_id, pages, args.expired_status)
+        summary["mode"] = "smartsheet"
     else:
         raise SystemExit("Provide --excel-input or SMARTSHEET_SHEET_ID/--smartsheet-sheet-id")
 
     summary["sitemap_pages_found"] = len(pages)
     summary["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
+    if args.summary_output:
+        args.summary_output.parent.mkdir(parents=True, exist_ok=True)
+        args.summary_output.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
     return 0
 

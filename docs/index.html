@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Website Content Scan Admin</title>
+    <style>
+      :root {
+        --bg: #f4efe7;
+        --panel: #fffaf2;
+        --ink: #1f2a30;
+        --muted: #5d6a70;
+        --accent: #0f6d62;
+        --accent-soft: #d6eee7;
+        --line: #d7d1c8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, #efe4d3 0, transparent 32rem),
+          linear-gradient(180deg, #f7f1e8 0%, #f2ece3 100%);
+      }
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px 20px 48px;
+      }
+      h1, h2 { margin: 0 0 12px; }
+      p { line-height: 1.55; }
+      .hero, .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 12px 30px rgba(31, 42, 48, 0.06);
+      }
+      .hero { margin-bottom: 20px; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin-bottom: 6px;
+      }
+      .value {
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .button {
+        display: inline-block;
+        text-decoration: none;
+        background: var(--accent);
+        color: white;
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+      .button.secondary {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      .panels {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+      }
+      ol, ul {
+        margin: 0;
+        padding-left: 20px;
+        line-height: 1.6;
+      }
+      .muted { color: var(--muted); }
+      code {
+        background: #f0ebe2;
+        padding: 0.1rem 0.35rem;
+        border-radius: 6px;
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p class="muted">Website Content Scan Admin</p>
+        <h1>Keep the scan running without digging through the repo</h1>
+        <p>This page gives you the quickest path to run the automation, check its health, manage exclusions in <code>sites.yml</code>, and submit a manual IPW sitemap when Cloudflare blocks the automated fetch.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml">Open the workflow</a>
+          <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml">Edit exclusions in sites.yml</a>
+          <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml">Submit IPW sitemap</a>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <span class="label">Last run</span>
+          <div class="value" id="last-run-at">Loading…</div>
+        </article>
+        <article class="panel">
+          <span class="label">Latest run result</span>
+          <div class="value" id="last-run-result">Loading…</div>
+        </article>
+        <article class="panel">
+          <span class="label">Smartsheet connection</span>
+          <div class="value" id="smartsheet-connection">Loading…</div>
+        </article>
+        <article class="panel">
+          <span class="label">Last IPW upload processed</span>
+          <div class="value" id="last-upload-at">Loading…</div>
+        </article>
+      </section>
+
+      <section class="panels">
+        <article class="panel">
+          <h2>IPW manual sitemap</h2>
+          <p class="muted">Use this only when IPW blocks the automated sitemap fetch.</p>
+          <ol>
+            <li>Open the IPW sitemap in your browser.</li>
+            <li>Save it as <code>sitemap.xml</code>.</li>
+            <li>Use the upload button on this page to open the GitHub submission form.</li>
+            <li>Drag the file into the issue and submit it.</li>
+          </ol>
+          <div class="actions">
+            <a class="button" href="https://www.ipw.com/sitemap.xml">Open IPW sitemap</a>
+            <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml">Upload through GitHub form</a>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Helpful links</h2>
+          <ul>
+            <li><a href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml">Edit included and excluded sections in <code>sites.yml</code></a></li>
+            <li><a href="https://github.com/gzciteli/website-content-scan/tree/main/manual-sitemaps">Open the manual sitemap folder</a></li>
+            <li><a href="https://github.com/gzciteli/website-content-scan/blob/main/CHECKLIST.md">Open the validation checklist</a></li>
+            <li><a href="https://github.com/gzciteli/website-content-scan/blob/main/README.md">Open the main repo instructions</a></li>
+          </ul>
+          <p id="message" class="muted" style="margin-top: 16px;">Loading latest status message…</p>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      function formatTimestamp(value) {
+        if (!value) return "Not available yet";
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return value;
+        return parsed.toLocaleString();
+      }
+
+      function textForConnection(value) {
+        if (value === true) return "Connected";
+        if (value === false) return "Needs attention";
+        return "Not checked yet";
+      }
+
+      fetch("./status.json")
+        .then((response) => response.json())
+        .then((status) => {
+          document.getElementById("last-run-at").textContent = formatTimestamp(status.last_run_at);
+          document.getElementById("last-run-result").textContent = status.last_run_result || "Not available yet";
+          document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
+          document.getElementById("last-upload-at").textContent = formatTimestamp(status.last_upload_processed_at);
+          document.getElementById("message").textContent = status.message || "No status message has been recorded yet.";
+        })
+        .catch(() => {
+          document.getElementById("last-run-at").textContent = "Status file not available";
+          document.getElementById("last-run-result").textContent = "Status file not available";
+          document.getElementById("smartsheet-connection").textContent = "Status file not available";
+          document.getElementById("last-upload-at").textContent = "Status file not available";
+          document.getElementById("message").textContent = "The dashboard status file could not be loaded yet.";
+        });
+    </script>
+  </body>
+</html>

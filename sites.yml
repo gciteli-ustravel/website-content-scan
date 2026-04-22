@@ -1,3 +1,14 @@
+# This is the main file to update when you want to change what the scan includes.
+# Each site can have:
+# - sitemap: the sitemap URL to scan
+# - exclude_paths: sections whose child pages should stay out of the scan
+# - fallback_sitemap_file: a manual sitemap file to use if the live one is blocked
+# - allow_sitemap_errors: continue the overall scan if that site's sitemap fails
+#
+# Exclusion rules:
+# - "/" excludes only the homepage
+# - "/news" keeps the /news landing page, but excludes pages under it like /news/story
+# - Keep paths short and start them with "/"
 sites:
   - name: ustravel.org
     sitemap: https://www.ustravel.org/sitemap.xml

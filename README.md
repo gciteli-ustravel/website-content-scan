@@ -1,28 +1,57 @@
-# Website Content Scan Updater
+# Website Content Scan
 
-This tool updates the Website Content Scan from website sitemaps.
+This repo powers the automation that scans website sitemaps and updates the Website Content Scan in Smartsheet.
 
-It can run in two ways:
+## Where To Edit Things
 
-- **Smartsheet mode:** GitHub Actions updates the live Smartsheet sheet directly.
-- **Excel fallback mode:** A team member exports the sheet from Smartsheet, runs the script, and receives an updated workbook.
+- `sites.yml`: add sites, update sitemap URLs, and manage excluded sections
+- `manual-sitemaps/`: fallback location for manual sitemap files like IPW
+- `docs/index.html`: simple admin dashboard for status and quick links
+- `CHECKLIST.md`: quick validation list after changes
+- `MAINTAINERS.md`: backup notes for the dormant Excel fallback path
 
-## What It Does
+## Daily Use
 
-For every site listed in `sites.yml`, the updater:
+Most users only need these three things:
 
-1. Reads the site's sitemap.
-2. Recursively follows sitemap indexes.
-3. Applies site-specific path exclusions.
-4. Keeps normal web pages and skips files like PDFs, images, videos, XML, ZIPs, and spreadsheets.
-5. Normalizes URLs so `http`, `https`, `www`, and trailing slash differences do not create duplicates.
-6. Adds missing rows with `Site`, `Page`, `Sub-Page`, `Last Updated`, and `Page Status`.
-7. Updates `Last Updated` on existing rows when the sitemap provides a `lastmod` value.
-8. Sets `Page Status` to `Page Expired` for rows that no longer appear in the sitemap.
+1. Open the GitHub Actions workflow called **Website Content Scan Admin** to run the update.
+2. Edit `sites.yml` when sections should be excluded from the scan.
+3. Use the IPW sitemap upload form if IPW blocks the automated fetch.
 
-## Required Sheet Columns
+## Exclusions Live In `sites.yml`
 
-The live Smartsheet should contain these columns:
+`sites.yml` is the main operating file for the scan.
+
+Use `exclude_paths` when you want to keep a section’s child pages out of the scan. For example:
+
+- `/news` keeps the `/news` landing page
+- `/news/story-name` stays out of the scan
+- `/` excludes only the homepage
+
+The automation also supports:
+
+- `fallback_sitemap_file` for manual sitemap backups
+- `allow_sitemap_errors: true` to skip a blocked site without failing the whole run
+
+## Manual IPW Sitemap Upload
+
+IPW can block automated sitemap access. When that happens:
+
+1. Open `https://www.ipw.com/sitemap.xml` in a browser.
+2. Save the file as `sitemap.xml`.
+3. Open the GitHub IPW sitemap upload issue form.
+4. Drag the file into the issue and submit it.
+
+The workflow will place the file into `manual-sitemaps/ipw.com/sitemap.xml` and then run the scan.
+
+## Smartsheet Setup
+
+The live automation needs these GitHub repository secrets:
+
+- `SMARTSHEET_ACCESS_TOKEN`
+- `SMARTSHEET_SHEET_ID`
+
+The Smartsheet sheet should contain these columns:
 
 - `URL`
 - `Site`
@@ -31,103 +60,24 @@ The live Smartsheet should contain these columns:
 - `Page Status`
 - `Last Updated`
 
-The `URL` column can remain formula-generated. The updater reads it for comparison, but only writes `Site`, `Page`, `Sub-Page`, `Last Updated`, and `Page Status`.
-
-If `Page Status` uses a restricted dropdown, add these allowed values:
+If `Page Status` is a restricted dropdown, include:
 
 - `Not Started`
 - `Page Expired`
 
-## Site List
+## What The Automation Does
 
-Edit `sites.yml` to add or remove websites:
+For every site in `sites.yml`, the updater:
 
-```yaml
-sites:
-  - name: ustravel.org
-    sitemap: https://www.ustravel.org/sitemap.xml
-    exclude_paths:
-      - /
-      - /news
-      - /press
-      - /research
+1. Reads the sitemap.
+2. Follows sitemap indexes when needed.
+3. Applies `exclude_paths`.
+4. Skips non-page files like PDFs, images, spreadsheets, and XML files.
+5. Normalizes URLs so formatting differences do not create duplicates.
+6. Adds missing pages.
+7. Updates `Last Updated` when sitemap data includes it.
+8. Marks missing pages as `Page Expired`.
 
-  - name: ipw.com
-    sitemap: https://www.ipw.com/sitemap.xml
-    fallback_sitemap_file: manual-sitemaps/ipw.com/sitemap.xml
-    allow_sitemap_errors: true
-```
+## Backup Path
 
-The `name` is for humans. The updater derives the actual site value from each sitemap URL and strips `www.` while preserving real subdomains such as `esto.ustravel.org`.
-
-Use `exclude_paths` when a site has section subpages that should not be added to the scan. Excluding `/news` still includes `/news`, but excludes pages below it, such as `/news/example-story`. Excluding `/` only skips the homepage, not the whole site.
-
-Use `allow_sitemap_errors: true` for a site whose sitemap may be temporarily blocked or unavailable. The workflow will log a warning and continue scanning the other sites.
-
-Use `fallback_sitemap_file` when a sitemap is visible in a browser but blocked from GitHub Actions. The updater tries the live sitemap first; if that fails and the fallback file exists, it reads the uploaded file instead.
-
-## Manual Sitemap Upload
-
-IPW currently uses Cloudflare protection that can block GitHub Actions from reading `https://www.ipw.com/sitemap.xml`. To include IPW in a scan:
-
-1. Open `https://www.ipw.com/sitemap.xml` in a browser.
-2. Save the page as `sitemap.xml`.
-3. In GitHub, open `manual-sitemaps/ipw.com/`.
-4. Click **Add file > Upload files**.
-5. Upload the saved `sitemap.xml`.
-6. Commit directly to `main`.
-7. Run the Excel fallback or Smartsheet workflow again.
-
-The IPW entry in `sites.yml` already points to `manual-sitemaps/ipw.com/sitemap.xml` as its fallback.
-
-## Smartsheet Setup
-
-Smartsheet API access is available on Business and Enterprise plans. A Smartsheet user generates an access token from their Smartsheet account, and GitHub stores that token as an encrypted repository secret.
-
-Recommended ownership:
-
-- Use a permanent staff account or service account, not an intern's personal account.
-- Give that account access to the Website Content Scan sheet.
-- Store the token in GitHub as `SMARTSHEET_ACCESS_TOKEN`.
-- Store the sheet ID in GitHub as `SMARTSHEET_SHEET_ID`.
-
-The sheet ID is the number in the Smartsheet sheet URL.
-
-## GitHub One-Click and Weekly Runs
-
-The workflow at `.github/workflows/update-website-content-scan.yml` supports:
-
-- Manual one-click runs through **Actions > Update Website Content Scan > Run workflow**.
-- Weekly automatic runs every Monday at 14:00 UTC.
-
-## Excel Fallback
-
-Install dependencies:
-
-```bash
-python3 -m pip install -r website_content_scan/requirements.txt
-```
-
-Run the updater against an exported workbook:
-
-```bash
-python3 website_content_scan/scripts/update_scan.py \
-  --excel-input "/path/to/Website Content Scan.xlsx" \
-  --excel-output "/path/to/Website Content Scan.updated.xlsx"
-```
-
-The output workbook will include newly found pages, updated `Last Updated` values, and expired page flags.
-
-## Smartsheet Mode Locally
-
-```bash
-export SMARTSHEET_ACCESS_TOKEN="your-token"
-export SMARTSHEET_SHEET_ID="your-sheet-id"
-python3 website_content_scan/scripts/update_scan.py
-```
-
-## Notes
-
-- Root pages are stored as `Page = /` and blank `Sub-Page`.
-- `/about-us/executives` becomes `Page = /about-us` and `Sub-Page = /executives`.
-- If a sitemap entry has no `lastmod`, `Last Updated` is left blank.
+An Excel fallback still exists for maintainers, but it is no longer part of the normal user workflow. If the main automation breaks and someone asks about a backup option, point them to `MAINTAINERS.md` or ask AI for help using it.

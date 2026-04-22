@@ -1,16 +1,28 @@
-name: Update Website Content Scan
+name: Website Content Scan Admin
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 14 * * 1"
+  issues:
+    types:
+      - opened
+      - edited
+      - reopened
+
+permissions:
+  contents: write
+  issues: write
 
 jobs:
-  update-smartsheet:
+  run-scan:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,8 +32,179 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Update Smartsheet
+      - name: Run website content scan
+        id: scan
         env:
           SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
           SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
-        run: python scripts/update_scan.py --config sites.yml
+        run: |
+          mkdir -p .tmp
+          set +e
+          python scripts/update_scan.py --config sites.yml --summary-output .tmp/scan-summary.json 2>&1 | tee .tmp/scan.log
+          status=${PIPESTATUS[0]}
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Check Smartsheet connection
+        id: connection
+        env:
+          SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
+          SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
+        run: |
+          mkdir -p .tmp
+          set +e
+          python scripts/check_smartsheet_connection.py --output .tmp/connection.json >/tmp/connection.log 2>&1
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Update dashboard status
+        run: |
+          message="Website Content Scan completed."
+          result="success"
+          if [ "${{ steps.scan.outputs.exit_code }}" != "0" ]; then
+            result="failure"
+            message=$(tail -n 20 .tmp/scan.log | tr '\n' ' ' | sed "s/'/ /g")
+          fi
+          python scripts/update_status_json.py \
+            --path docs/status.json \
+            --last-run-result "$result" \
+            --message "$message" \
+            --summary-json .tmp/scan-summary.json \
+            --smartsheet-connection-ok "${{ steps.connection.outputs.ok }}"
+
+      - name: Commit dashboard status
+        run: |
+          if git diff --quiet -- docs/status.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/status.json
+          git commit -m "Update dashboard status"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Fail if scan failed
+        if: steps.scan.outputs.exit_code != '0'
+        run: exit 1
+
+  process-ipw-sitemap-upload:
+    if: github.event_name == 'issues' && contains(join(github.event.issue.labels.*.name, ','), 'ipw-sitemap-upload')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Process issue attachment
+        id: upload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p .tmp
+          set +e
+          python scripts/process_ipw_issue.py \
+            --event-path "$GITHUB_EVENT_PATH" \
+            --repo-root "$GITHUB_WORKSPACE" \
+            --output .tmp/upload-summary.json 2>&1 | tee .tmp/upload.log
+          status=${PIPESTATUS[0]}
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Run website content scan after upload
+        id: scan
+        if: steps.upload.outputs.exit_code == '0'
+        env:
+          SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
+          SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
+        run: |
+          set +e
+          python scripts/update_scan.py --config sites.yml --summary-output .tmp/scan-summary.json 2>&1 | tee .tmp/scan.log
+          status=${PIPESTATUS[0]}
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Check Smartsheet connection
+        id: connection
+        if: steps.upload.outputs.exit_code == '0'
+        env:
+          SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
+          SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
+        run: |
+          set +e
+          python scripts/check_smartsheet_connection.py --output .tmp/connection.json >/tmp/connection.log 2>&1
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Update dashboard status
+        run: |
+          upload_result="failure"
+          upload_message=$(tail -n 20 .tmp/upload.log | tr '\n' ' ' | sed "s/'/ /g")
+          if [ "${{ steps.upload.outputs.exit_code }}" = "0" ]; then
+            upload_result="success"
+            upload_message="IPW sitemap uploaded and saved."
+          fi
+
+          scan_result=""
+          if [ "${{ steps.upload.outputs.exit_code }}" = "0" ]; then
+            scan_result="success"
+            if [ "${{ steps.scan.outputs.exit_code }}" != "0" ]; then
+              scan_result="failure"
+              upload_message="IPW sitemap uploaded, but the follow-up scan failed. Re-run the workflow from Actions."
+            fi
+          fi
+
+          python scripts/update_status_json.py \
+            --path docs/status.json \
+            --last-upload-processed-at "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            --last-upload-result "$upload_result" \
+            --last-run-result "$scan_result" \
+            --message "$upload_message" \
+            --summary-json .tmp/scan-summary.json \
+            --smartsheet-connection-ok "${{ steps.connection.outputs.ok }}"
+
+      - name: Commit sitemap and dashboard updates
+        run: |
+          if git diff --quiet -- manual-sitemaps/ipw.com/sitemap.xml docs/status.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manual-sitemaps/ipw.com/sitemap.xml docs/status.json
+          git commit -m "Process IPW sitemap upload"
+          git push origin HEAD:${{ github.event.repository.default_branch }}
+
+      - name: Comment on issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          issue_number="${{ github.event.issue.number }}"
+          if [ "${{ steps.upload.outputs.exit_code }}" != "0" ]; then
+            gh issue comment "$issue_number" --body "I could not process the attached sitemap yet. Please make sure the issue includes the IPW sitemap file as an attachment and try again."
+            exit 1
+          fi
+
+          if [ "${{ steps.scan.outputs.exit_code }}" = "0" ]; then
+            gh issue close "$issue_number" --comment "The IPW sitemap upload was processed successfully and the Website Content Scan was updated."
+          else
+            gh issue close "$issue_number" --comment "The IPW sitemap upload was processed successfully, but the follow-up scan failed. Please rerun the Website Content Scan Admin workflow from the Actions tab."
+            exit 1
+          fi
