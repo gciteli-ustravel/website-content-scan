@@ -412,7 +412,13 @@ def smartsheet_request(method: str, url: str, token: str, payload: Any | None = 
         },
         json=payload,
     )
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as exc:
+        detail = response.text.strip()
+        if detail:
+            raise requests.HTTPError(f"{exc} | Smartsheet response: {detail}", response=response) from exc
+        raise
     return response.json() if response.content else {}
 
 
@@ -451,26 +457,34 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
 
     rows_to_add = []
     rows_to_update = []
+    updated_last_updated = 0
+    expired = 0
 
     for key, page in sorted(pages.items(), key=lambda item: item[0]):
         if key in existing:
-            rows_to_update.append(
-                {
-                    "id": existing[key]["id"],
-                    "cells": [{"columnId": columns["Last Updated"], "value": page.last_updated or ""}],
-                }
-            )
+            # Do not send blank strings to a date column. If the sitemap omits lastmod,
+            # leave the current Smartsheet value as-is.
+            if page.last_updated:
+                rows_to_update.append(
+                    {
+                        "id": existing[key]["id"],
+                        "cells": [{"columnId": columns["Last Updated"], "value": page.last_updated}],
+                    }
+                )
+                updated_last_updated += 1
         else:
+            cells = [
+                {"columnId": columns["Site"], "value": page.site},
+                {"columnId": columns["Page"], "value": page.page},
+                {"columnId": columns["Sub-Page"], "value": page.sub_page},
+                {"columnId": columns["Page Status"], "value": DEFAULT_NEW_STATUS},
+            ]
+            if page.last_updated:
+                cells.append({"columnId": columns["Last Updated"], "value": page.last_updated})
             rows_to_add.append(
                 {
                     "toBottom": True,
-                    "cells": [
-                        {"columnId": columns["Site"], "value": page.site},
-                        {"columnId": columns["Page"], "value": page.page},
-                        {"columnId": columns["Sub-Page"], "value": page.sub_page},
-                        {"columnId": columns["Last Updated"], "value": page.last_updated or ""},
-                        {"columnId": columns["Page Status"], "value": DEFAULT_NEW_STATUS},
-                    ],
+                    "cells": cells,
                 }
             )
 
@@ -482,6 +496,7 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
                     "cells": [{"columnId": columns["Page Status"], "value": expired_status}],
                 }
             )
+            expired += 1
 
     if rows_to_add:
         smartsheet_request("POST", f"{base_url}/sheets/{sheet_id}/rows", token, rows_to_add)
@@ -492,8 +507,8 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
 
     return {
         "added": len(rows_to_add),
-        "updated_last_updated": len(pages) - len(rows_to_add),
-        "expired": sum(1 for key in existing if key not in pages),
+        "updated_last_updated": updated_last_updated,
+        "expired": expired,
     }
 
 
