@@ -28,7 +28,7 @@ The automation runs on a weekly schedule and can also be triggered manually at a
 - Identifies pages not yet in SmartSheet
 - Adds new pages with their URL, Site, Page, Sub-Page, and Last Updated fields populated
 - Marks pages that have been removed from the site as Page Expired
-- Reports results to a live dashboard at https://gzciteli.github.io/website-content-scan/
+- Reports results to a live dashboard at https://{your profile}.github.io/website-content-scan/
 
 **What this system does not do:**
 
@@ -52,15 +52,14 @@ You need a GitHub account and collaborator access to the repository. If you do n
 
 Ask the current owner or your GitHub organization administrator to invite you as a collaborator. They do this by going to the repository, clicking **Settings**, selecting **Collaborators and teams** in the left sidebar, and searching for your GitHub username. You will receive an email invitation — accept it to gain access.
 
-Once accepted, the repository is available at:
+The original repository is available at:
 
 **github.com/gzciteli/website-content-scan**
 
-For all day-to-day tasks in this guide, the GitHub web interface is sufficient. If you ever need a local copy of the files on your computer, download **GitHub Desktop** from desktop.github.com. It allows you to clone and work with the repository without using a terminal.
 
 **Step 2 — Verify the system is running**
 
-Open the dashboard at **https://gzciteli.github.io/website-content-scan/** and confirm:
+Open the dashboard at **https://{your profile}.github.io/website-content-scan/** and confirm:
 
 - **Latest result** shows **success**
 - **Smartsheet connection** shows **Connected**
@@ -88,7 +87,7 @@ The automation connects to SmartSheet using an API token stored securely in GitH
 
 *Save both values as GitHub Secrets:*
 
-1. Go to the repository at **github.com/gzciteli/website-content-scan**.
+1. Go to the repository at **github.com/{your profile}/website-content-scan**.
 2. Click **Settings** in the top navigation bar.
 3. In the left sidebar, click **Secrets and variables**, then **Actions**.
 4. Click **New repository secret**.
@@ -103,7 +102,7 @@ Once both secrets are saved, run the workflow manually (see [Running the Workflo
 
 The dashboard is the primary interface for checking status and taking action. Open it at:
 
-**https://gzciteli.github.io/website-content-scan/**
+**https://{your profile}.github.io/website-content-scan/**
 
 The dashboard is titled **Sitemap Automation**. At the top it shows five status cards: when the automation last ran, when the next scheduled run is (in your local time), whether the last run succeeded, whether SmartSheet is connected, and how many pages were added. Below that are sections for the IPW manual upload and for viewing and editing the list of scanned sites.
 
