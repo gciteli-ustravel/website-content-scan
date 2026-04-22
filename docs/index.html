@@ -194,6 +194,10 @@
               <div class="value" id="last-run-at">Loading…</div>
             </article>
             <article class="status-card">
+              <div class="eyebrow">Next automatic fetch</div>
+              <div class="value" id="next-auto-fetch">Loading…</div>
+            </article>
+            <article class="status-card">
               <div class="eyebrow">Latest result</div>
               <div class="value" id="last-run-result">Loading…</div>
             </article>
@@ -209,6 +213,7 @@
               </div>
             </article>
           </div>
+          <p>The automation also runs automatically every Monday. If the next scheduled fetch works for you, you do not need to run it manually.</p>
           <p>To run it now, open the workflow page and click <strong>Run workflow</strong>.</p>
           <div class="actions">
             <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml" target="_blank" rel="noreferrer">Open the workflow</a>
@@ -281,6 +286,29 @@
         if (value === true) return "Connected";
         if (value === false) return "Needs attention";
         return "Not checked yet";
+      }
+
+      function nextScheduledFetch() {
+        const now = new Date();
+        const next = new Date(now);
+        next.setUTCSeconds(0, 0);
+        next.setUTCHours(14, 0, 0, 0);
+
+        const daysUntilMonday = (8 - now.getUTCDay()) % 7;
+        next.setUTCDate(now.getUTCDate() + daysUntilMonday);
+
+        if (daysUntilMonday === 0 && now >= next) {
+          next.setUTCDate(next.getUTCDate() + 7);
+        }
+
+        return next.toLocaleString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short",
+        });
       }
 
       function escapeHtml(value) {
@@ -363,6 +391,7 @@
         .then((response) => response.json())
         .then((status) => {
           document.getElementById("last-run-at").textContent = formatTimestamp(status.last_run_at);
+          document.getElementById("next-auto-fetch").textContent = nextScheduledFetch();
           document.getElementById("last-run-result").textContent = status.last_run_result || "Not available yet";
           document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
           setAddedPages(status);
@@ -372,6 +401,7 @@
         })
         .catch(() => {
           document.getElementById("last-run-at").textContent = "Status file not available";
+          document.getElementById("next-auto-fetch").textContent = nextScheduledFetch();
           document.getElementById("last-run-result").textContent = "Status file not available";
           document.getElementById("smartsheet-connection").textContent = "Status file not available";
           document.getElementById("pages-added").textContent = "Status file not available";
