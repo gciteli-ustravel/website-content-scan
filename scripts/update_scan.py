@@ -361,6 +361,16 @@ def row_url_key(row: int, ws: Any, headers: dict[str, int]) -> str:
     return f"{strip_www(str(site))}{path}".lower()
 
 
+def page_summary(page: SitemapPage) -> dict[str, str]:
+    return {
+        "url": page.url,
+        "site": page.site,
+        "page": page.page,
+        "sub_page": page.sub_page,
+        "last_updated": page.last_updated,
+    }
+
+
 def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPage], expired_status: str) -> dict[str, int]:
     workbook = openpyxl.load_workbook(input_path)
     ws = workbook[SHEET_NAME] if SHEET_NAME in workbook.sheetnames else workbook.active
@@ -373,6 +383,7 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
             existing[key] = row
 
     added = updated = expired = 0
+    added_pages: list[dict[str, str]] = []
     for key, page in sorted(pages.items(), key=lambda item: item[0]):
         if key in existing:
             ws.cell(row=existing[key], column=headers["Last Updated"], value=page.last_updated or None)
@@ -386,6 +397,7 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
         ws.cell(row=new_row, column=headers["Last Updated"], value=page.last_updated or None)
         ws.cell(row=new_row, column=headers["Page Status"], value=DEFAULT_NEW_STATUS)
         added += 1
+        added_pages.append(page_summary(page))
 
     for key, row in existing.items():
         if key not in pages:
@@ -394,7 +406,12 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     workbook.save(output_path)
-    return {"added": added, "updated_last_updated": updated, "expired": expired}
+    return {
+        "added": added,
+        "added_pages": added_pages,
+        "updated_last_updated": updated,
+        "expired": expired,
+    }
 
 
 def smartsheet_headers(sheet: dict[str, Any]) -> dict[str, int]:
@@ -521,6 +538,7 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
         existing[key] = row
 
     rows_to_add = []
+    added_pages: list[dict[str, str]] = []
     rows_to_update = []
     updated_last_updated = 0
     expired = 0
@@ -539,6 +557,7 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
                 updated_last_updated += 1
         else:
             cells = [
+                smartsheet_value_cell(columns["URL"], page.url),
                 smartsheet_value_cell(columns["Site"], page.site),
                 smartsheet_value_cell(columns["Page"], page.page),
                 smartsheet_value_cell(columns["Sub-Page"], page.sub_page),
@@ -557,6 +576,7 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
                     "cells": cells,
                 }
             )
+            added_pages.append(page_summary(page))
 
     for key, row in existing.items():
         if key not in pages:
@@ -584,6 +604,7 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
 
     return {
         "added": len(rows_to_add),
+        "added_pages": added_pages,
         "updated_last_updated": updated_last_updated,
         "expired": expired,
     }

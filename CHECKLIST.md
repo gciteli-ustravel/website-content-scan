@@ -6,6 +6,8 @@
 - [ ] The workflow name is plain English and easy to recognize.
 - [ ] The dashboard opens with a short title and a simple task-based layout.
 - [ ] The dashboard has a workflow section that shows the latest run status.
+- [ ] The dashboard shows how many pages were added in the latest successful run.
+- [ ] The dashboard can open a popup with the list of pages that were added.
 - [ ] The workflow section tells the user to click `Run workflow`.
 - [ ] The workflow button opens in a new tab.
 - [ ] The dashboard includes a direct link to the IPW sitemap.

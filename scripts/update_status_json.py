@@ -47,10 +47,13 @@ def main() -> int:
     args = parse_args()
     current = load_json(args.path)
 
-    if args.summary_json and args.summary_json.exists():
-        summary = load_json(args.summary_json)
-        current["last_run_summary"] = summary
-        current["last_run_at"] = summary.get("finished_at", args.last_run_at)
+    if args.summary_json:
+        if args.summary_json.exists():
+            summary = load_json(args.summary_json)
+            current["last_run_summary"] = summary
+            current["last_run_at"] = summary.get("finished_at", args.last_run_at)
+        else:
+            current["last_run_summary"] = None
 
     if args.connection_json and args.connection_json.exists():
         connection = load_json(args.connection_json)

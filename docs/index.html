@@ -119,6 +119,63 @@
         margin: 0 8px 8px 0;
         font-size: 0.95rem;
       }
+      .ghost-button {
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--accent);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .ghost-button[hidden] {
+        display: none;
+      }
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 0;
+        width: min(760px, calc(100vw - 32px));
+        box-shadow: 0 24px 60px rgba(31, 42, 48, 0.18);
+      }
+      dialog::backdrop {
+        background: rgba(31, 42, 48, 0.35);
+      }
+      .dialog-card {
+        padding: 22px;
+        background: var(--panel);
+      }
+      .dialog-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .dialog-close {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .page-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .page-item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+        background: #fff;
+      }
+      .page-item a {
+        color: var(--accent);
+        word-break: break-word;
+      }
     </style>
   </head>
   <body>
@@ -143,6 +200,13 @@
             <article class="status-card">
               <div class="eyebrow">Smartsheet connection</div>
               <div class="value" id="smartsheet-connection">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Pages added last run</div>
+              <div class="value" id="pages-added">Loading…</div>
+              <div class="actions">
+                <button class="ghost-button" id="view-added-pages" type="button" hidden>See which pages</button>
+              </div>
             </article>
           </div>
           <p>To run it now, open the workflow page and click <strong>Run workflow</strong>.</p>
@@ -189,7 +253,23 @@
       </div>
     </main>
 
+    <dialog id="added-pages-dialog">
+      <div class="dialog-card">
+        <div class="dialog-header">
+          <div>
+            <div class="eyebrow">Latest run</div>
+            <h2>Pages added to Smartsheet</h2>
+          </div>
+          <button class="dialog-close" id="close-added-pages" type="button">Close</button>
+        </div>
+        <p id="added-pages-summary" class="muted">No new pages were recorded.</p>
+        <div class="page-list" id="added-pages-list"></div>
+      </div>
+    </dialog>
+
     <script>
+      let latestAddedPages = [];
+
       function formatTimestamp(value) {
         if (!value) return "Not available yet";
         const parsed = new Date(value);
@@ -201,6 +281,56 @@
         if (value === true) return "Connected";
         if (value === false) return "Needs attention";
         return "Not checked yet";
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function setAddedPages(status) {
+        const countNode = document.getElementById("pages-added");
+        const button = document.getElementById("view-added-pages");
+        const summary = status && status.last_run_summary;
+        const isLatestRunSuccessful = status && status.last_run_result === "success";
+
+        latestAddedPages = isLatestRunSuccessful && summary && Array.isArray(summary.added_pages)
+          ? summary.added_pages
+          : [];
+
+        if (!isLatestRunSuccessful) {
+          countNode.textContent = "Not available";
+          button.hidden = true;
+          return;
+        }
+
+        countNode.textContent = String(summary && typeof summary.added === "number" ? summary.added : latestAddedPages.length);
+        button.hidden = latestAddedPages.length === 0;
+      }
+
+      function openAddedPagesDialog() {
+        const dialog = document.getElementById("added-pages-dialog");
+        const summary = document.getElementById("added-pages-summary");
+        const list = document.getElementById("added-pages-list");
+
+        if (!latestAddedPages.length) {
+          summary.textContent = "No new pages were added in the latest successful run.";
+          list.innerHTML = "";
+        } else {
+          summary.textContent = `${latestAddedPages.length} page${latestAddedPages.length === 1 ? "" : "s"} added in the latest successful run.`;
+          list.innerHTML = latestAddedPages.map((page) => `
+            <article class="page-item">
+              <div class="list-title">${escapeHtml(page.site)} ${escapeHtml(page.page)}${page.sub_page ? escapeHtml(page.sub_page) : ""}</div>
+              <a href="${escapeHtml(page.url)}" target="_blank" rel="noreferrer">${escapeHtml(page.url)}</a>
+            </article>
+          `).join("");
+        }
+
+        dialog.showModal();
       }
 
       function renderSites(summary) {
@@ -235,6 +365,7 @@
           document.getElementById("last-run-at").textContent = formatTimestamp(status.last_run_at);
           document.getElementById("last-run-result").textContent = status.last_run_result || "Not available yet";
           document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
+          setAddedPages(status);
           document.getElementById("last-upload-at").textContent = formatTimestamp(status.last_upload_processed_at);
           document.getElementById("last-upload-result").textContent = status.last_upload_result || "Not available yet";
           document.getElementById("message").textContent = status.message || "No workflow message has been recorded yet.";
@@ -243,6 +374,7 @@
           document.getElementById("last-run-at").textContent = "Status file not available";
           document.getElementById("last-run-result").textContent = "Status file not available";
           document.getElementById("smartsheet-connection").textContent = "Status file not available";
+          document.getElementById("pages-added").textContent = "Status file not available";
           document.getElementById("last-upload-at").textContent = "Status file not available";
           document.getElementById("last-upload-result").textContent = "Status file not available";
           document.getElementById("message").textContent = "The dashboard status file could not be loaded yet.";
@@ -252,6 +384,11 @@
         .then((response) => response.json())
         .then((summary) => renderSites(summary))
         .catch(() => renderSites(null));
+
+      document.getElementById("view-added-pages").addEventListener("click", openAddedPagesDialog);
+      document.getElementById("close-added-pages").addEventListener("click", () => {
+        document.getElementById("added-pages-dialog").close();
+      });
     </script>
   </body>
 </html>
