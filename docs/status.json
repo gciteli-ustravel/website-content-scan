@@ -1,21 +1,428 @@
 {
-  "last_run_at": "2026-04-22T17:39:05.302621+00:00",
+  "last_run_at": "2026-04-22T17:43:32.540617+00:00",
   "last_run_result": "success",
   "smartsheet_connection_ok": true,
-  "last_upload_processed_at": null,
-  "last_upload_result": "Not processed yet",
-  "message": "Website Content Scan completed.",
-  "updated_at": "2026-04-22T17:39:06.173490+00:00",
+  "last_upload_processed_at": "2026-04-22T17:43:33Z",
+  "last_upload_result": "success",
+  "message": "IPW sitemap uploaded and saved.",
+  "updated_at": "2026-04-22T17:43:33.238689+00:00",
   "workflow_version": "Sitemap Automation branch build 2026-04-22",
   "workflow_ref": "main",
-  "workflow_sha": "9ffd8376b71cae1b4ccf58973478468514eccf7b",
+  "workflow_sha": "2621463ca10e528a514b1a04be430b50a6948b31",
   "last_run_summary": {
-    "added": 0,
-    "added_pages": [],
-    "updated_last_updated": 119,
+    "added": 58,
+    "added_pages": [
+      {
+        "url": "https://esto.ustravel.org/convince-your-boss-2026",
+        "site": "esto.ustravel.org",
+        "page": "/convince-your-boss-2026",
+        "sub_page": "",
+        "last_updated": "2026-04-20"
+      },
+      {
+        "url": "https://esto.ustravel.org/frequently-asked-questions",
+        "site": "esto.ustravel.org",
+        "page": "/frequently-asked-questions",
+        "sub_page": "",
+        "last_updated": "2026-04-20"
+      },
+      {
+        "url": "https://ipw.com/",
+        "site": "ipw.com",
+        "page": "/",
+        "sub_page": "",
+        "last_updated": ""
+      },
+      {
+        "url": "https://ipw.com/about-ipw",
+        "site": "ipw.com",
+        "page": "/about-ipw",
+        "sub_page": "",
+        "last_updated": "2025-12-22"
+      },
+      {
+        "url": "https://ipw.com/about-ipw/registration-frequently-asked-questions",
+        "site": "ipw.com",
+        "page": "/about-ipw",
+        "sub_page": "/registration-frequently-asked-questions",
+        "last_updated": "2025-05-08"
+      },
+      {
+        "url": "https://ipw.com/about-ipw/sponsors",
+        "site": "ipw.com",
+        "page": "/about-ipw",
+        "sub_page": "/sponsors",
+        "last_updated": "2026-04-13"
+      },
+      {
+        "url": "https://ipw.com/about/2025-recap",
+        "site": "ipw.com",
+        "page": "/about",
+        "sub_page": "/2025-recap",
+        "last_updated": "2026-01-30"
+      },
+      {
+        "url": "https://ipw.com/about/future-dates",
+        "site": "ipw.com",
+        "page": "/about",
+        "sub_page": "/future-dates",
+        "last_updated": "2026-01-30"
+      },
+      {
+        "url": "https://ipw.com/affiliate-event-request-application",
+        "site": "ipw.com",
+        "page": "/affiliate-event-request-application",
+        "sub_page": "",
+        "last_updated": "2025-10-01"
+      },
+      {
+        "url": "https://ipw.com/apply-exhibit",
+        "site": "ipw.com",
+        "page": "/apply-exhibit",
+        "sub_page": "",
+        "last_updated": "2026-04-17"
+      },
+      {
+        "url": "https://ipw.com/attend",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "",
+        "last_updated": "2026-02-25"
+      },
+      {
+        "url": "https://ipw.com/attend/buyers/buyer-eligibility-criteria",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/buyers/buyer-eligibility-criteria",
+        "last_updated": "2026-02-02"
+      },
+      {
+        "url": "https://ipw.com/attend/buyers/distribution-buyers",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/buyers/distribution-buyers",
+        "last_updated": "2026-02-02"
+      },
+      {
+        "url": "https://ipw.com/attend/buyers/domestic-leisure-buyers",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/buyers/domestic-leisure-buyers",
+        "last_updated": "2026-02-02"
+      },
+      {
+        "url": "https://ipw.com/attend/buyers/international-leisure-buyers",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/buyers/international-leisure-buyers",
+        "last_updated": "2026-02-02"
+      },
+      {
+        "url": "https://ipw.com/attend/buyers/international-meeting-incentive-buyers",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/buyers/international-meeting-incentive-buyers",
+        "last_updated": "2026-02-02"
+      },
+      {
+        "url": "https://ipw.com/attend/buyers/registration-fees-buyers",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/buyers/registration-fees-buyers",
+        "last_updated": "2026-02-26"
+      },
+      {
+        "url": "https://ipw.com/attend/destination-experiences",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/destination-experiences",
+        "last_updated": "2026-04-22"
+      },
+      {
+        "url": "https://ipw.com/attend/lunch",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/lunch",
+        "last_updated": "2026-03-24"
+      },
+      {
+        "url": "https://ipw.com/attend/media/domestic-journalists",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/media/domestic-journalists",
+        "last_updated": "2026-02-02"
+      },
+      {
+        "url": "https://ipw.com/attend/media/international-journalists",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/media/international-journalists",
+        "last_updated": "2026-03-12"
+      },
+      {
+        "url": "https://ipw.com/attend/media/us-travels-ipw-press-conference-program",
+        "site": "ipw.com",
+        "page": "/attend",
+        "sub_page": "/media/us-travels-ipw-press-conference-program",
+        "last_updated": "2026-03-17"
+      },
+      {
+        "url": "https://ipw.com/domestic-direct",
+        "site": "ipw.com",
+        "page": "/domestic-direct",
+        "sub_page": "",
+        "last_updated": "2026-01-08"
+      },
+      {
+        "url": "https://ipw.com/exhibit",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "",
+        "last_updated": "2026-02-25"
+      },
+      {
+        "url": "https://ipw.com/exhibit-ipw/introducing-distribution-pavilion",
+        "site": "ipw.com",
+        "page": "/exhibit-ipw",
+        "sub_page": "/introducing-distribution-pavilion",
+        "last_updated": "2025-11-24"
+      },
+      {
+        "url": "https://ipw.com/exhibit-ipw/where-travel-and-technology-converge",
+        "site": "ipw.com",
+        "page": "/exhibit-ipw",
+        "sub_page": "/where-travel-and-technology-converge",
+        "last_updated": "2025-11-25"
+      },
+      {
+        "url": "https://ipw.com/exhibitor-member-benefits",
+        "site": "ipw.com",
+        "page": "/exhibitor-member-benefits",
+        "sub_page": "",
+        "last_updated": "2025-10-15"
+      },
+      {
+        "url": "https://ipw.com/exhibitor-webinars",
+        "site": "ipw.com",
+        "page": "/exhibitor-webinars",
+        "sub_page": "",
+        "last_updated": "2026-03-18"
+      },
+      {
+        "url": "https://ipw.com/exhibitors",
+        "site": "ipw.com",
+        "page": "/exhibitors",
+        "sub_page": "",
+        "last_updated": "2025-11-25"
+      },
+      {
+        "url": "https://ipw.com/exhibitors/exhibitor-appointments",
+        "site": "ipw.com",
+        "page": "/exhibitors",
+        "sub_page": "/exhibitor-appointments",
+        "last_updated": "2025-03-11"
+      },
+      {
+        "url": "https://ipw.com/full-ipw-schedule",
+        "site": "ipw.com",
+        "page": "/full-ipw-schedule",
+        "sub_page": "",
+        "last_updated": "2026-04-21"
+      },
+      {
+        "url": "https://ipw.com/hotel-and-travel",
+        "site": "ipw.com",
+        "page": "/hotel-and-travel",
+        "sub_page": "",
+        "last_updated": "2026-03-10"
+      },
+      {
+        "url": "https://ipw.com/hotel-and-travel/unauthorized-solicitation",
+        "site": "ipw.com",
+        "page": "/hotel-and-travel",
+        "sub_page": "/unauthorized-solicitation",
+        "last_updated": "2025-01-24"
+      },
+      {
+        "url": "https://ipw.com/important-policies",
+        "site": "ipw.com",
+        "page": "/important-policies",
+        "sub_page": "",
+        "last_updated": "2026-04-16"
+      },
+      {
+        "url": "https://ipw.com/ipw-booth-calculator",
+        "site": "ipw.com",
+        "page": "/ipw-booth-calculator",
+        "sub_page": "",
+        "last_updated": "2025-10-29"
+      },
+      {
+        "url": "https://ipw.com/ipw-daily/spring-preview/trends-policies-insight",
+        "site": "ipw.com",
+        "page": "/ipw-daily",
+        "sub_page": "/spring-preview/trends-policies-insight",
+        "last_updated": "2023-03-02"
+      },
+      {
+        "url": "https://ipw.com/ipw-online-marketplace-REDIRECT",
+        "site": "ipw.com",
+        "page": "/ipw-online-marketplace-REDIRECT",
+        "sub_page": "",
+        "last_updated": "2026-01-29"
+      },
+      {
+        "url": "https://ipw.com/marketing-and-pr-opportunities-REDIRECT",
+        "site": "ipw.com",
+        "page": "/marketing-and-pr-opportunities-REDIRECT",
+        "sub_page": "",
+        "last_updated": "2025-06-18"
+      },
+      {
+        "url": "https://ipw.com/marketing-and-pr-opportunities/ipw-media-marketplace-and-ipw-online-press-room-REDIRECT",
+        "site": "ipw.com",
+        "page": "/marketing-and-pr-opportunities",
+        "sub_page": "/ipw-media-marketplace-and-ipw-online-press-room-REDIRECT",
+        "last_updated": "2026-01-29"
+      },
+      {
+        "url": "https://ipw.com/media-marketplace",
+        "site": "ipw.com",
+        "page": "/media-marketplace",
+        "sub_page": "",
+        "last_updated": "2025-12-10"
+      },
+      {
+        "url": "https://ipw.com/node/1652",
+        "site": "ipw.com",
+        "page": "/node",
+        "sub_page": "/1652",
+        "last_updated": "2026-03-06"
+      },
+      {
+        "url": "https://ipw.com/node/3",
+        "site": "ipw.com",
+        "page": "/node",
+        "sub_page": "/3",
+        "last_updated": "2026-04-21"
+      },
+      {
+        "url": "https://ipw.com/our-advisory-partners",
+        "site": "ipw.com",
+        "page": "/our-advisory-partners",
+        "sub_page": "",
+        "last_updated": "2026-01-28"
+      },
+      {
+        "url": "https://ipw.com/plan-exhibit",
+        "site": "ipw.com",
+        "page": "/plan-exhibit",
+        "sub_page": "",
+        "last_updated": "2025-10-15"
+      },
+      {
+        "url": "https://ipw.com/pricing-calculator",
+        "site": "ipw.com",
+        "page": "/pricing-calculator",
+        "sub_page": "",
+        "last_updated": "2025-11-07"
+      },
+      {
+        "url": "https://ipw.com/privacy-policy",
+        "site": "ipw.com",
+        "page": "/privacy-policy",
+        "sub_page": "",
+        "last_updated": "2025-04-30"
+      },
+      {
+        "url": "https://ipw.com/registration-fees-exhibitor-delegates",
+        "site": "ipw.com",
+        "page": "/registration-fees-exhibitor-delegates",
+        "sub_page": "",
+        "last_updated": "2026-03-12"
+      },
+      {
+        "url": "https://ipw.com/registration-information",
+        "site": "ipw.com",
+        "page": "/registration-information",
+        "sub_page": "",
+        "last_updated": "2025-11-25"
+      },
+      {
+        "url": "https://ipw.com/schedule",
+        "site": "ipw.com",
+        "page": "/schedule",
+        "sub_page": "",
+        "last_updated": "2026-03-11"
+      },
+      {
+        "url": "https://ipw.com/schedule/appointments",
+        "site": "ipw.com",
+        "page": "/schedule",
+        "sub_page": "/appointments",
+        "last_updated": "2026-04-17"
+      },
+      {
+        "url": "https://ipw.com/sponsor",
+        "site": "ipw.com",
+        "page": "/sponsor",
+        "sub_page": "",
+        "last_updated": "2026-01-15"
+      },
+      {
+        "url": "https://ipw.com/terms-and-conditions",
+        "site": "ipw.com",
+        "page": "/terms-and-conditions",
+        "sub_page": "",
+        "last_updated": "2026-04-20"
+      },
+      {
+        "url": "https://ipw.com/testing-block-ads",
+        "site": "ipw.com",
+        "page": "/testing-block-ads",
+        "sub_page": "",
+        "last_updated": "2025-10-23"
+      },
+      {
+        "url": "https://ipw.com/testing-event-page",
+        "site": "ipw.com",
+        "page": "/testing-event-page",
+        "sub_page": "",
+        "last_updated": "2025-11-18"
+      },
+      {
+        "url": "https://ipw.com/travel/host-hotel-supplier-rates",
+        "site": "ipw.com",
+        "page": "/travel",
+        "sub_page": "/host-hotel-supplier-rates",
+        "last_updated": "2026-04-21"
+      },
+      {
+        "url": "https://ipw.com/travel/hotel-accommodations-hosted-attendees",
+        "site": "ipw.com",
+        "page": "/travel",
+        "sub_page": "/hotel-accommodations-hosted-attendees",
+        "last_updated": "2026-01-30"
+      },
+      {
+        "url": "https://ipw.com/travel/hotel-accommodations-non-hosted-attendees",
+        "site": "ipw.com",
+        "page": "/travel",
+        "sub_page": "/hotel-accommodations-non-hosted-attendees",
+        "last_updated": "2026-03-06"
+      },
+      {
+        "url": "https://ipw.com/whats-new-2026",
+        "site": "ipw.com",
+        "page": "/whats-new-2026",
+        "sub_page": "",
+        "last_updated": "2026-03-19"
+      }
+    ],
+    "updated_last_updated": 117,
     "expired": 31,
     "mode": "smartsheet",
-    "sitemap_pages_found": 120,
-    "finished_at": "2026-04-22T17:39:05.302621+00:00"
+    "sitemap_pages_found": 176,
+    "finished_at": "2026-04-22T17:43:32.540617+00:00"
   }
 }
