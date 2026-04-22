@@ -1,14 +1,14 @@
 {
-  "last_run_at": "2026-04-22T17:44:43.342612+00:00",
+  "last_run_at": "2026-04-22T17:47:15.780988+00:00",
   "last_run_result": "success",
   "smartsheet_connection_ok": true,
-  "last_upload_processed_at": "2026-04-22T17:44:44Z",
+  "last_upload_processed_at": "2026-04-22T17:47:16Z",
   "last_upload_result": "success",
   "message": "IPW sitemap uploaded and saved.",
-  "updated_at": "2026-04-22T17:44:44.194609+00:00",
+  "updated_at": "2026-04-22T17:47:16.578710+00:00",
   "workflow_version": "Sitemap Automation branch build 2026-04-22",
   "workflow_ref": "main",
-  "workflow_sha": "b27678f8121aaf57452f2ab1652c67058a582219",
+  "workflow_sha": "fdcdc370a577dc8c6f13033de2d2aea962c8ba9e",
   "last_run_summary": {
     "added": 0,
     "added_pages": [],
@@ -16,6 +16,6 @@
     "expired": 31,
     "mode": "smartsheet",
     "sitemap_pages_found": 176,
-    "finished_at": "2026-04-22T17:44:43.342612+00:00"
+    "finished_at": "2026-04-22T17:47:15.780988+00:00"
   }
 }
