@@ -429,10 +429,18 @@ def smartsheet_cell(row: dict[str, Any], column_id: int) -> Any:
     return None
 
 
-def smartsheet_value_cell(column_id: int, value: str, *, strict: bool | None = None) -> dict[str, Any]:
+def smartsheet_value_cell(
+    column_id: int,
+    value: str,
+    *,
+    strict: bool | None = None,
+    override_validation: bool | None = None,
+) -> dict[str, Any]:
     cell: dict[str, Any] = {"columnId": column_id, "value": value}
     if strict is not None:
         cell["strict"] = strict
+    if override_validation is not None:
+        cell["overrideValidation"] = override_validation
     return cell
 
 
@@ -484,7 +492,12 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
                 smartsheet_value_cell(columns["Site"], page.site),
                 smartsheet_value_cell(columns["Page"], page.page),
                 smartsheet_value_cell(columns["Sub-Page"], page.sub_page),
-                smartsheet_value_cell(columns["Page Status"], DEFAULT_NEW_STATUS, strict=False),
+                smartsheet_value_cell(
+                    columns["Page Status"],
+                    DEFAULT_NEW_STATUS,
+                    strict=False,
+                    override_validation=True,
+                ),
             ]
             if page.last_updated:
                 cells.append(smartsheet_value_cell(columns["Last Updated"], page.last_updated))
@@ -500,7 +513,14 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
             rows_to_update.append(
                 {
                     "id": row["id"],
-                    "cells": [smartsheet_value_cell(columns["Page Status"], expired_status, strict=False)],
+                    "cells": [
+                        smartsheet_value_cell(
+                            columns["Page Status"],
+                            expired_status,
+                            strict=False,
+                            override_validation=True,
+                        )
+                    ],
                 }
             )
             expired += 1
