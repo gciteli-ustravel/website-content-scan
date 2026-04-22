@@ -48,14 +48,51 @@ If you are taking over ownership of this automation, work through these steps be
 
 **Step 1 — Get repository access**
 
-You need a GitHub account and collaborator access to the repository. If you do not have one yet, create a free account at **github.com**.
+You need a GitHub account. If you do not have one yet, create a free account at **github.com**.
 
-Ask the current owner or your GitHub organization administrator to invite you as a collaborator. They do this by going to the repository, clicking **Settings**, selecting **Collaborators and teams** in the left sidebar, and searching for your GitHub username. You will receive an email invitation — accept it to gain access.
+How you get access depends on whether the repository is staying in its current location or moving to a new account or organization:
 
-The original repository is available at:
+*Option A — Taking over the existing repository:*
 
-**github.com/gzciteli/website-content-scan**
+Ask the current owner to transfer the repository to your account or organization, or to add you as a collaborator with admin access. To add a collaborator, the current owner goes to the repository, clicks **Settings**, selects **Collaborators and teams** in the left sidebar, and invites your GitHub username. You will receive an email — accept it to gain access. No further setup is needed for the repository itself.
 
+*Option B — Forking to a new organization account:*
+
+If the repository needs to move to an organization account (for example, an IT-managed GitHub org), the cleanest path is to fork it:
+
+1. Go to **github.com/gzciteli/website-content-scan**.
+2. Click the **Fork** button in the top-right corner.
+3. Under **Owner**, select the organization account (not your personal account).
+4. Keep the repository name as `website-content-scan`. Click **Create fork**.
+5. The forked repository will be at **github.com/{your-org}/website-content-scan**.
+
+After forking, you will need to complete two additional setup tasks before the system is functional — see Step 1a and Step 1b below.
+
+**Step 1a — Enable GitHub Pages (fork only)**
+
+GitHub Pages is not automatically enabled on a forked repository. The dashboard will not work until you turn it on.
+
+1. Go to your forked repository on GitHub.
+2. Click **Settings**.
+3. In the left sidebar, click **Pages**.
+4. Under **Build and deployment > Source**, select **Deploy from a branch**.
+5. Under **Branch**, select **main** from the first dropdown and **/docs** from the second.
+6. Click **Save**.
+
+After a minute or two, the dashboard will be published at **https://{your-org}.github.io/website-content-scan/**. GitHub will show a confirmation banner on the Pages settings screen once it is live.
+
+**Step 1b — Update the dashboard button links (fork only)**
+
+The dashboard contains buttons that link to the original repository for actions like running the workflow, uploading an IPW sitemap, and viewing `sites.yml`. After a fork, these buttons will still point to the original location and need to be updated.
+
+1. In your forked repository, navigate to **docs/index.html**.
+2. Click the **pencil icon** (Edit this file) in the top-right corner of the file view.
+3. Use **Ctrl+H** (Windows/Linux) or **Command+Option+F** (Mac) to open find and replace.
+4. Find: `gzciteli/website-content-scan`
+5. Replace with: `{your-org}/website-content-scan`
+6. Replace all instances, then scroll down and click **Commit changes**.
+
+There are three buttons affected: Open the workflow, Open IPW upload form, and Open sites.yml. The find-and-replace will update all of them at once.
 
 **Step 2 — Verify the system is running**
 
@@ -69,7 +106,7 @@ If all three look healthy, the system is working and you can proceed to operate 
 
 **Step 3 — Set up SmartSheet credentials (only needed if starting fresh)**
 
-The automation connects to SmartSheet using an API token stored securely in GitHub. If you are taking over a working system, the token is already in place. If you are setting up from scratch or the credentials have been lost, follow these steps.
+The automation connects to SmartSheet using an API token stored securely in GitHub. If you are taking over a working system where the token was already saved, it transfers with the repository and you do not need to do anything. If you are setting up from scratch or the credentials have been lost, follow these steps.
 
 *Get an API token from SmartSheet:*
 
@@ -495,13 +532,14 @@ If either secret is missing or expired, the **Smartsheet connection** card on th
 
 **How to navigate GitHub through the web interface**
 
-If you are guiding a user through GitHub without access to the repository yourself, these are the key locations:
+If you are guiding a user through GitHub without access to the repository yourself, these are the key locations. Replace `{your-org}` with the actual GitHub account or organization name where the repository lives.
 
-- **Repository home:** github.com/gzciteli/website-content-scan — all files, the README, and top-level navigation tabs
-- **Actions tab:** github.com/gzciteli/website-content-scan/actions — lists all workflow runs with status; click any run to view logs; the **Run workflow** button triggers a manual run
-- **Secrets settings:** github.com/gzciteli/website-content-scan/settings/secrets/actions — where API credentials are stored; values cannot be read back after saving, only updated or deleted
+- **Repository home:** github.com/{your-org}/website-content-scan — all files, the README, and top-level navigation tabs
+- **Actions tab:** github.com/{your-org}/website-content-scan/actions — lists all workflow runs with status; click any run to view logs; the **Run workflow** button triggers a manual run
+- **Secrets settings:** github.com/{your-org}/website-content-scan/settings/secrets/actions — where API credentials are stored; values cannot be read back after saving, only updated or deleted
+- **Pages settings:** github.com/{your-org}/website-content-scan/settings/pages — where GitHub Pages is enabled; must be set to deploy from the `main` branch, `/docs` folder
 - **Editing a file:** Navigate to the file (e.g., `sites.yml`), click the pencil icon (top-right of the file view), make edits in the browser, then click **Commit changes** and commit directly to `main`
-- **Issues tab:** github.com/gzciteli/website-content-scan/issues — where IPW upload submissions appear; **New issue** opens the template chooser; the IPW upload form is listed there
+- **Issues tab:** github.com/{your-org}/website-content-scan/issues — where IPW upload submissions appear; **New issue** opens the template chooser; the IPW upload form is listed there
 
 **Common maintenance tasks an AI can help with**
 
@@ -509,5 +547,6 @@ If you are guiding a user through GitHub without access to the repository yourse
 - *Adding an exclusion:* Same process — request the current `sites.yml` contents and return the updated file with the new path added under `exclude_paths` for the relevant site.
 - *Fixing a failed run:* Ask the user to open the Actions tab, click the failed run, expand the failed step, and share the error text. Most failures are a transient network timeout (just re-run) or an expired SmartSheet credential (update `SMARTSHEET_ACCESS_TOKEN`).
 - *Updating SmartSheet credentials:* Walk the user through SmartSheet's **Account icon > Apps & Integrations > API Access > Generate new access token**, then through GitHub's **Settings > Secrets and variables > Actions** to update `SMARTSHEET_ACCESS_TOKEN`.
+- *Setting up after a fork:* Enable GitHub Pages via Settings > Pages (deploy from `main`, `/docs`). Then update the hardcoded URLs in `docs/index.html` — use the pencil-icon editor and Ctrl+H / Command+Option+F to find-and-replace `gzciteli/website-content-scan` with the new repo path. Finally, set up GitHub Secrets (`SMARTSHEET_ACCESS_TOKEN` and `SMARTSHEET_SHEET_ID`) in Settings > Secrets and variables > Actions.
 - *Checking what was added:* Direct the user to the dashboard's **Pages added last run** card and the **See which pages** popup button.
 - *Emergency recovery:* If the normal automation is broken, refer to `MAINTAINERS.md` in the repository. It documents a local Excel-based fallback that a technical maintainer or AI can help execute step by step.
