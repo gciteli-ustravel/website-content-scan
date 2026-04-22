@@ -9,11 +9,10 @@
 3. [How the Automation Works](#3-how-the-automation-works)
 4. [Key Components](#4-key-components)
 5. [How to Verify It Worked](#5-how-to-verify-it-worked)
-6. [How New Pages Are Added](#6-how-new-pages-are-added)
-7. [Troubleshooting](#7-troubleshooting)
-8. [Maintenance / Updating the System](#8-maintenance--updating-the-system)
-9. [Best Practices](#9-best-practices)
-10. [Appendix](#10-appendix)
+6. [Troubleshooting](#6-troubleshooting)
+7. [Maintenance / Updating the System](#7-maintenance--updating-the-system)
+8. [Best Practices](#8-best-practices)
+9. [Appendix](#9-appendix)
 
 ---
 
@@ -29,25 +28,23 @@ The automation runs on a weekly schedule and can also be triggered manually at a
 - Identifies pages not yet in SmartSheet
 - Adds new pages with their URL, Site, Page, Sub-Page, and Last Updated fields populated
 - Marks pages that have been removed from the site as Page Expired
-- Reports results to a live dashboard
+- Reports results to a live dashboard at https://gzciteli.github.io/website-content-scan/
 
 **What this system does not do:**
 
-- Evaluate or prioritize content — that remains a human judgment call
+- Evaluate or prioritize content — that is handled by SmartSheet. See the Content Scan SmartSheet User Guide
 - Scan sections that are excluded by configuration (such as /news or /press on ustravel.org)
-- Automatically add new sites — that requires a configuration update in `sites.yml`
+- Automatically add new sites to the scan — that requires a configuration update in `sites.yml`
 
 ---
 
 ## 2. Getting Started / Running the Automation
 
-This section covers everything you need to operate the system. All steps use the GitHub web interface or the dashboard — no software installation or command-line access is required.
-
----
+This section covers everything you need to operate the system. All steps use the GitHub web interface or the dashboard.
 
 ### Setting Up for a New Owner
 
-If you are taking over ownership of this automation from someone else, work through these steps before anything else. If the system is already running and you just need to use it, skip to [Opening the Dashboard](#opening-the-dashboard).
+If you are taking over ownership of this automation, work through these steps before anything else. If the system is already running and you just need to use it, skip to [Opening the Dashboard](#opening-the-dashboard).
 
 **Step 1 — Get repository access**
 
@@ -59,7 +56,7 @@ Once accepted, the repository is available at:
 
 **github.com/gzciteli/website-content-scan**
 
-For all day-to-day tasks in this guide, the GitHub web interface is sufficient. If you ever need a local copy of the files on your computer — for example, to make more complex edits — download **GitHub Desktop** from desktop.github.com. It allows you to work with the repository without using the terminal.
+For all day-to-day tasks in this guide, the GitHub web interface is sufficient. If you ever need a local copy of the files on your computer, download **GitHub Desktop** from desktop.github.com. It allows you to clone and work with the repository without using a terminal.
 
 **Step 2 — Verify the system is running**
 
@@ -69,11 +66,11 @@ Open the dashboard at **https://gzciteli.github.io/website-content-scan/** and c
 - **Smartsheet connection** shows **Connected**
 - **Last time it ran** shows a recent date
 
-If all three look healthy, the system is working and you can proceed to operate it normally. If any card shows an error or an outdated date, see [Troubleshooting](#7-troubleshooting).
+If all three look healthy, the system is working and you can proceed to operate it normally. If any card shows an error or an outdated date, see [Troubleshooting](#6-troubleshooting).
 
 **Step 3 — Set up SmartSheet credentials (only needed if starting fresh)**
 
-The automation connects to SmartSheet using an API token. This token is stored securely in GitHub. If you are taking over a working system, the token is already in place and you do not need to do anything. If you are setting up from scratch or the credentials have been lost, follow these steps.
+The automation connects to SmartSheet using an API token stored securely in GitHub. If you are taking over a working system, the token is already in place. If you are setting up from scratch or the credentials have been lost, follow these steps.
 
 *Get an API token from SmartSheet:*
 
@@ -95,8 +92,8 @@ The automation connects to SmartSheet using an API token. This token is stored s
 2. Click **Settings** in the top navigation bar.
 3. In the left sidebar, click **Secrets and variables**, then **Actions**.
 4. Click **New repository secret**.
-5. For the first secret: Name it `SMARTSHEET_ACCESS_TOKEN` and paste the API token as the value. Click **Add secret**.
-6. Repeat for the second secret: Name it `SMARTSHEET_SHEET_ID` and paste the Sheet ID as the value. Click **Add secret**.
+5. Name it `SMARTSHEET_ACCESS_TOKEN` and paste the API token as the value. Click **Add secret**.
+6. Repeat for the second secret: name it `SMARTSHEET_SHEET_ID` and paste the Sheet ID. Click **Add secret**.
 
 Once both secrets are saved, run the workflow manually (see [Running the Workflow Manually](#running-the-workflow-manually)) and confirm the **Smartsheet connection** card on the dashboard shows **Connected**.
 
@@ -114,7 +111,7 @@ The dashboard is titled **Sitemap Automation**. At the top it shows five status 
 
 ### Understanding the Automatic Schedule
 
-The workflow runs automatically once a week — on Friday evening for U.S.-based users (1:00 AM UTC Saturday). The **Next automatic fetch** card on the dashboard shows the exact time of the next scheduled run in your local time zone.
+The workflow runs automatically once a week — on Friday evening ET. The **Next automatic fetch** card on the dashboard shows the exact time of the next scheduled run in your local time zone.
 
 If the scheduled run is coming up soon and fits your timeline, you do not need to do anything. The scan will run on its own.
 
@@ -129,7 +126,7 @@ If you need the scan to run before the next scheduled time:
 3. Click the green **Run workflow** button inside the dropdown to confirm.
 4. The workflow will start within a few seconds. You can refresh the Actions page to see it running.
 
-The workflow typically completes in under two minutes. Once it finishes, the dashboard will update to reflect the latest status.
+The workflow typically completes in under two minutes. Shortly after it finishes, the dashboard will update to reflect the latest status.
 
 > **Note on dashboard timing:** The dashboard is published by GitHub Pages, which updates shortly after the workflow commits its status file. If the dashboard does not immediately show the latest result after the run finishes, wait about a minute and refresh the page.
 
@@ -154,8 +151,8 @@ ipw.com occasionally blocks automated sitemap requests, even though the sitemap 
 **Step-by-step:**
 
 1. Open **https://www.ipw.com/sitemap.xml** in Chrome.
-2. In Chrome, go to **File > Save Page As**.
-3. Save the file to your computer. Name it **sitemap.xml** exactly.
+2. In Chrome, go to **Right click > Save Page As**.
+3. Save the file to your computer.
 4. Return to the dashboard and click **Open IPW upload form**. This opens a GitHub issue form in a new tab.
 5. Drag the **sitemap.xml** file you saved into the issue form. You will see it appear as an attachment.
 6. The title is already filled in — you do not need to change it. Notes are optional.
@@ -207,8 +204,8 @@ This file controls which sites are scanned and which sections are excluded. It i
 
 **To add a new website to the scan** or change what sections are excluded, you have two options:
 
-- **Edit directly in GitHub:** Open `sites.yml` using the link on the dashboard. On the file page, click the **pencil icon** (Edit this file) in the top-right corner of the file view. Make your changes, then scroll down and click **Commit changes**. Use the default branch option and add a brief description of what you changed.
-- **Ask an AI assistant:** Paste the contents of `sites.yml` into a conversation with an AI assistant (such as ChatGPT or Claude) and describe what you want — for example, "add a site called example.org with sitemap at https://example.org/sitemap.xml and exclude /news." The assistant will give you updated file contents to paste back in.
+- **Edit directly in GitHub:** Open `sites.yml` using the link on the dashboard. On the file page, click the **pencil icon** (Edit this file) in the top-right corner. Make your changes, scroll down, and click **Commit changes**. Use the default option to commit to `main`.
+- **Ask an AI assistant:** Paste the contents of `sites.yml` into a conversation with ChatGPT or Claude and describe what you want — for example, "add a site called example.org with sitemap at https://example.org/sitemap.xml and exclude /news." The assistant will give you updated file contents to paste back in.
 
 Changes take effect on the next workflow run.
 
@@ -234,7 +231,8 @@ The IPW upload form is a GitHub issue template. Submitting it places the sitemap
 
 ### The SmartSheet
 
-The SmartSheet is the destination for all scan results. The automation populates these columns:
+The SmartSheet is the destination for all scan results.
+When the automation finds a URL that is not already in SmartSheet, it adds a new row with the following fields populated:
 
 | Column | Description |
 |---|---|
@@ -245,9 +243,13 @@ The SmartSheet is the destination for all scan results. The automation populates
 | Page Status | Set to **Not Started** for new pages; **Page Expired** for removed pages |
 | Last Updated | Date the page was last modified, sourced from the sitemap when available |
 
+Pages are added only once. If a page is already in SmartSheet under any status, the automation will not create a duplicate row.
+
+If a page that was previously in SmartSheet is no longer found in the sitemap, its **Page Status** is updated to **Page Expired**. This indicates the page may have been removed from the site or its URL may have changed.
+
 ---
 
-## 5. How to Verify It Worked
+## 4. How to Verify It Worked
 
 After a workflow run completes, use the following checks to confirm it succeeded.
 
@@ -259,6 +261,12 @@ After a workflow run completes, use the following checks to confirm it succeeded
 4. Check **Pages added last run** to see how many new pages were found
 5. Click **See which pages** to view the specific pages that were added, including their site, page path, and URL
 
+### In SmartSheet
+
+Open the Website Content Scan sheet and look for rows with a **Page Status** of **Not Started** added recently, or rows where **Last Updated** was refreshed. Newly added rows will appear at the bottom of the sheet unless sorting has been applied.
+
+> **Timing note:** The dashboard reflects the run as soon as GitHub Pages finishes publishing the updated status file — typically one to two minutes after the workflow completes. If you check immediately after the run finishes in Actions, the dashboard may still show the previous run's data. Wait a moment and refresh.
+
 ### In GitHub Actions
 
 1. Go to the repository at **github.com/gzciteli/website-content-scan**
@@ -266,34 +274,10 @@ After a workflow run completes, use the following checks to confirm it succeeded
 3. Find the most recent run of **Website Content Scan Admin**
 4. A green checkmark indicates the run completed successfully; a red X indicates it failed
 
-### In SmartSheet
-
-Open the Website Content Scan sheet and look for rows with a **Page Status** of **Not Started** added recently, or rows where **Last Updated** was refreshed. Newly added rows will appear at the bottom of the sheet unless sorting has been applied.
-
-> **Timing note:** The dashboard reflects the run as soon as GitHub Pages finishes publishing the updated status file — typically one to two minutes after the workflow completes. If you check immediately after the run finishes in Actions, the dashboard may still show the previous run's data. Wait a moment and refresh.
-
 ---
 
-## 6. How New Pages Are Added
 
-When the automation finds a URL that is not already in SmartSheet, it adds a new row with the following fields populated:
-
-| Field | Value |
-|---|---|
-| URL | The full page address |
-| Site | The name of the website (e.g., ustravel.org) |
-| Page | The top-level section of the URL path (e.g., /about) |
-| Sub-Page | The next level of the path, if present (e.g., /leadership) |
-| Page Status | Set to **Not Started** |
-| Last Updated | Pulled from the sitemap's last-modified date, when available |
-
-Pages are added only once. If a page is already in SmartSheet under any status, the automation will not create a duplicate row.
-
-If a page that was previously in SmartSheet is no longer found in the sitemap, its **Page Status** is updated to **Page Expired**. This indicates the page may have been removed from the site or its URL may have changed.
-
----
-
-## 7. Troubleshooting
+## 5. Troubleshooting
 
 ### The workflow failed in GitHub Actions
 
@@ -305,7 +289,7 @@ If a page that was previously in SmartSheet is no longer found in the sitemap, i
 2. Expand the failed step to read the error message.
 3. Common causes include a temporary network issue when fetching a sitemap, or a problem with the SmartSheet credentials.
 4. For a one-time failure, try running the workflow again manually. Most transient failures resolve on their own.
-5. If the failure repeats, note the error message and contact a technical maintainer.
+5. If the failure repeats, note the error message. I recommend using an AI agent to help resolve the issue (see the section on Maintaining this Automation)
 
 ---
 
@@ -318,8 +302,8 @@ If a page that was previously in SmartSheet is no longer found in the sitemap, i
 **What to do:**
 
 1. Confirm the Website Content Scan sheet still exists and has not been renamed, moved, or deleted.
-2. The SmartSheet API token may have expired. This is stored in the repository's GitHub Secrets and requires a technical maintainer to update.
-3. If you are not sure, contact a technical maintainer and share the dashboard screenshot.
+2. The SmartSheet API token may have expired. This is stored in the repository's GitHub Secrets and requires someone with access to the repo to fix.
+3. If the issue persists, I recommend using an AI agent to help resolve the issue (see the section on Maintaining this Automation).
 
 ---
 
@@ -356,21 +340,21 @@ Wait one to two minutes and refresh the page. The dashboard is published by GitH
 
 ---
 
-## 8. Maintenance / Updating the System
+## 6. Maintenance / Updating the System
 
-**A note on AI assistance:** Most maintenance tasks in this section can be handled with the help of an AI assistant such as ChatGPT or Claude. You do not need to understand the technical details to make changes — describe what you want to do and share the relevant file contents, and the assistant can prepare the changes for you to apply through the GitHub web interface. The Appendix includes a section with guidance specifically written for this kind of AI-assisted maintenance.
+**A note on AI assistance:** Most maintenance tasks in this section can be handled with the help of an AI assistant such as ChatGPT or Claude. You do not need to understand the technical details — describe what you want to do and share the relevant file contents, and the assistant can prepare the changes for you to apply through the GitHub web interface. The Appendix includes a section with technical context written specifically to support this kind of AI-assisted maintenance.
 
 ---
 
 ### Adding or Removing Sites, or Updating Exclusions
 
-To add a new website to the scan, remove an existing one, or change which sections of a site are excluded, see the [`sites.yml` section in Key Components](#sites.yml--adding-sites-and-managing-exclusions). That section covers how to edit the file directly in GitHub or with AI assistance.
+To add a new website to the scan, remove an existing one, or change which sections of a site are excluded, see [sites.yml — Adding Sites and Managing Exclusions](#sites.yml--adding-sites-and-managing-exclusions) in the Key Components section.
 
 ---
 
 ### Rotating SmartSheet Credentials
 
-If the SmartSheet API token is rotated or expires, the new token must be updated in GitHub Secrets. For step-by-step instructions on finding the token in SmartSheet and saving it to GitHub, see [Setting Up for a New Owner](#setting-up-for-a-new-owner) in the Getting Started section — the same steps apply.
+If the SmartSheet API token is rotated or expires, the new token must be updated in GitHub Secrets. For step-by-step instructions, see [Setting Up for a New Owner](#setting-up-for-a-new-owner) in the Getting Started section — the same steps apply.
 
 ---
 
@@ -382,7 +366,7 @@ This backup is not part of the normal workflow and is intended only for emergenc
 
 ---
 
-## 9. Best Practices
+## 7. Best Practices
 
 **Let the schedule do the work.** The automation runs weekly automatically. Before triggering a manual run, check the **Next automatic fetch** time on the dashboard. If the scheduled run is within a day or two, it is usually better to wait.
 
@@ -398,7 +382,7 @@ This backup is not part of the normal workflow and is intended only for emergenc
 
 ---
 
-## 10. Appendix
+## 8. Appendix
 
 ### Quick Reference — Where to Find Things
 
@@ -454,54 +438,54 @@ This backup is not part of the normal workflow and is intended only for emergenc
 
 ### AI Maintenance Guide
 
-This section is written for situations where an AI assistant — such as ChatGPT or Claude — is being used to help maintain this system. It provides technical context that is not needed for day-to-day use but that an AI needs in order to give accurate, useful guidance.
+This section provides technical context for an AI assistant — such as ChatGPT or Claude — being used to help maintain this system. It is not intended for day-to-day reading, but serves as a reference when an AI needs to guide a user through changes or troubleshooting without direct access to the repository.
 
 **Why this lives in GitHub**
 
-The automation is hosted in a GitHub repository because GitHub provides free, reliable infrastructure for three things this system depends on: automated workflows (GitHub Actions), a public status dashboard (GitHub Pages), and a structured way to receive user input (GitHub Issues). Together, these allow the scan to run on a schedule, publish its results to a dashboard, and accept manual sitemap uploads — all without requiring any server, database, or ongoing technical maintenance beyond occasional configuration changes.
+The automation is hosted in a GitHub repository because GitHub provides the infrastructure this system depends on at no cost: automated workflows (GitHub Actions), a public status dashboard (GitHub Pages), and structured user input (GitHub Issues). Together, these allow the scan to run on a schedule, publish its results, and accept manual sitemap uploads — all without requiring a server, database, or ongoing technical maintenance beyond occasional configuration changes.
 
 **Repository location**
 
-The repository is at **github.com/gzciteli/website-content-scan**. It is owned by the GitHub organization account `gzciteli`. All files referenced in this guide live in the `main` branch.
+The repository is at **github.com/gzciteli/website-content-scan**, owned by the GitHub organization `gzciteli`. All files referenced in this guide live on the `main` branch.
 
 **Repository file structure**
 
 ```
 website-content-scan/
-├── sites.yml                        The main configuration file: sites and exclusions
+├── sites.yml                          Main config: which sites to scan and what to exclude
 ├── docs/
-│   ├── index.html                   The dashboard (served via GitHub Pages)
-│   ├── status.json                  Written by the workflow after each run; drives the dashboard
-│   └── sites-summary.json           Written by the workflow; drives the sites section of the dashboard
+│   ├── index.html                     The dashboard (served via GitHub Pages)
+│   ├── status.json                    Written by the workflow after each run; drives the dashboard
+│   └── sites-summary.json             Written by the workflow; drives the sites section of the dashboard
 ├── manual-sitemaps/
 │   └── ipw.com/
-│       └── sitemap.xml              Receives the IPW manual upload
+│       └── sitemap.xml                Receives the IPW manual upload
 ├── scripts/
-│   ├── update_scan.py               Main scan logic: reads sitemaps, writes to SmartSheet
-│   ├── update_status_json.py        Updates docs/status.json after a run
-│   ├── generate_sites_summary.py    Updates docs/sites-summary.json from sites.yml
-│   ├── check_smartsheet_connection.py  Verifies the SmartSheet API is reachable
-│   └── process_ipw_issue.py         Extracts the sitemap file from a GitHub issue attachment
+│   ├── update_scan.py                 Core scan logic: reads sitemaps, writes to SmartSheet
+│   ├── update_status_json.py          Updates docs/status.json after a run
+│   ├── generate_sites_summary.py      Updates docs/sites-summary.json from sites.yml
+│   ├── check_smartsheet_connection.py Verifies the SmartSheet API is reachable
+│   └── process_ipw_issue.py           Extracts the sitemap file from a GitHub issue attachment
 ├── .github/
 │   ├── workflows/
 │   │   └── update-website-content-scan.yml   The GitHub Actions workflow
 │   └── ISSUE_TEMPLATE/
-│       └── ipw-sitemap-upload.yml            The IPW upload form template
-├── MAINTAINERS.md                   Emergency Excel fallback instructions (technical users only)
-└── requirements.txt                 Python dependencies (requests, smartsheet-python-sdk)
+│       └── ipw-sitemap-upload.yml             The IPW upload form template
+├── MAINTAINERS.md                     Emergency Excel fallback instructions (technical users only)
+└── requirements.txt                   Python dependencies (requests, smartsheet-python-sdk)
 ```
 
 **How the workflow triggers**
 
-The single workflow file (`update-website-content-scan.yml`) responds to three different events:
+The single workflow (`update-website-content-scan.yml`) responds to three events:
 
-- **Scheduled:** Runs automatically every Saturday at 1:00 AM UTC (Friday evening in U.S. time zones) via a GitHub cron schedule.
-- **Manual:** Can be triggered by any collaborator from the GitHub Actions tab using the "Run workflow" button.
-- **Issue submission:** When a GitHub issue is opened, edited, or reopened with the label `ipw-sitemap-upload` or a title beginning with `[IPW Sitemap Upload]`, the workflow extracts the attached sitemap file, saves it to `manual-sitemaps/ipw.com/sitemap.xml`, and immediately runs the full content scan.
+- **Scheduled:** Runs automatically every Saturday at 1:00 AM UTC (Friday evening ET) via GitHub's cron scheduler.
+- **Manual:** Any collaborator can trigger it from the Actions tab using the **Run workflow** button.
+- **Issue submission:** When a GitHub issue is opened with the label `ipw-sitemap-upload` or a title starting with `[IPW Sitemap Upload]`, the workflow extracts the attached sitemap file, saves it to `manual-sitemaps/ipw.com/sitemap.xml`, and immediately runs the full content scan.
 
 **GitHub Secrets required**
 
-These two secrets must be present in the repository for the scan to write to SmartSheet. They are set under **Settings > Secrets and variables > Actions** in the repository.
+These secrets must be present for the automation to write to SmartSheet. They are configured under **Settings > Secrets and variables > Actions** in the repository.
 
 | Secret name | What it holds |
 |---|---|
@@ -510,21 +494,21 @@ These two secrets must be present in the repository for the scan to write to Sma
 
 If either secret is missing or expired, the **Smartsheet connection** card on the dashboard will show **Needs attention** after the next run.
 
-**How to navigate GitHub without terminal access**
+**How to navigate GitHub through the web interface**
 
-If you are helping a user through GitHub's web interface, the key locations are:
+If you are guiding a user through GitHub without access to the repository yourself, these are the key locations:
 
-- **Repository home:** github.com/gzciteli/website-content-scan — shows all files, the README, and top-level navigation
-- **Actions tab:** github.com/gzciteli/website-content-scan/actions — lists all workflow runs; click any run to see logs; use the "Run workflow" button to trigger a manual run
-- **Settings > Secrets:** github.com/gzciteli/website-content-scan/settings/secrets/actions — where API credentials are stored; secrets can be added or updated but their values cannot be read back after saving
-- **Editing a file:** Navigate to the file (e.g., `sites.yml`), click the pencil icon top-right, make edits in the browser editor, then click **Commit changes** and use the default option to commit directly to `main`
-- **Issues tab:** github.com/gzciteli/website-content-scan/issues — where IPW upload submissions appear; the IPW upload form is accessed via **New issue**
+- **Repository home:** github.com/gzciteli/website-content-scan — all files, the README, and top-level navigation tabs
+- **Actions tab:** github.com/gzciteli/website-content-scan/actions — lists all workflow runs with status; click any run to view logs; the **Run workflow** button triggers a manual run
+- **Secrets settings:** github.com/gzciteli/website-content-scan/settings/secrets/actions — where API credentials are stored; values cannot be read back after saving, only updated or deleted
+- **Editing a file:** Navigate to the file (e.g., `sites.yml`), click the pencil icon (top-right of the file view), make edits in the browser, then click **Commit changes** and commit directly to `main`
+- **Issues tab:** github.com/gzciteli/website-content-scan/issues — where IPW upload submissions appear; **New issue** opens the template chooser; the IPW upload form is listed there
 
 **Common maintenance tasks an AI can help with**
 
-- *Adding a site:* Ask the user to open `sites.yml` in GitHub, copy its contents, and share them. Provide updated YAML with the new site entry. Walk the user through clicking the pencil icon, replacing the content, and committing.
-- *Adding an exclusion:* Same process — ask for the current `sites.yml` contents and provide the updated version with the new path added under `exclude_paths`.
-- *Fixing a failed run:* Ask the user to open the Actions tab, click the failed run, and paste the error from the failed step. Most failures are either a network timeout (re-run to fix) or a SmartSheet credential issue (update the secret).
-- *Updating SmartSheet credentials:* Walk the user through SmartSheet's **Apps & Integrations > API Access** to generate a new token, then through GitHub's **Settings > Secrets and variables > Actions** to update `SMARTSHEET_ACCESS_TOKEN`.
-- *Checking what pages were added:* Direct the user to the dashboard's **Pages added last run** card and the **See which pages** popup.
-- *Emergency recovery:* If the normal automation is broken, refer to `MAINTAINERS.md` in the repository. The file documents a local Excel-based fallback that a maintainer or AI can help execute.
+- *Adding a site:* Ask the user to open `sites.yml`, copy its contents, and share them. Provide the updated YAML with the new site entry and walk the user through the pencil-icon edit flow.
+- *Adding an exclusion:* Same process — request the current `sites.yml` contents and return the updated file with the new path added under `exclude_paths` for the relevant site.
+- *Fixing a failed run:* Ask the user to open the Actions tab, click the failed run, expand the failed step, and share the error text. Most failures are a transient network timeout (just re-run) or an expired SmartSheet credential (update `SMARTSHEET_ACCESS_TOKEN`).
+- *Updating SmartSheet credentials:* Walk the user through SmartSheet's **Account icon > Apps & Integrations > API Access > Generate new access token**, then through GitHub's **Settings > Secrets and variables > Actions** to update `SMARTSHEET_ACCESS_TOKEN`.
+- *Checking what was added:* Direct the user to the dashboard's **Pages added last run** card and the **See which pages** popup button.
+- *Emergency recovery:* If the normal automation is broken, refer to `MAINTAINERS.md` in the repository. It documents a local Excel-based fallback that a technical maintainer or AI can help execute step by step.
