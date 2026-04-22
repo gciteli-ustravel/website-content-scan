@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Website Scan</title>
+    <title>Sitemap Automation</title>
     <style>
       :root {
         --bg: #f5efe6;
@@ -124,15 +124,13 @@
   <body>
     <main>
       <section class="intro">
-        <div class="eyebrow">Website Scan</div>
-        <h1>What would you like to do?</h1>
-        <p>Use this page when you want to run the scan, review which sites and sections are included, or submit the IPW sitemap when it cannot be pulled automatically.</p>
+        <div class="eyebrow">Sitemap Automation</div>
+        <h1>Sitemap Automation</h1>
       </section>
 
       <div class="sections">
         <section class="section">
           <h2>Fetch Sitemaps and Update Content Scan Sheet</h2>
-          <p>This is the main automation that updates the Website Content Scan in Smartsheet.</p>
           <div class="status-grid">
             <article class="status-card">
               <div class="eyebrow">Last time it ran</div>
@@ -147,7 +145,7 @@
               <div class="value" id="smartsheet-connection">Loading…</div>
             </article>
           </div>
-          <p>To run it right now, open the workflow page and click <strong>Run workflow</strong>.</p>
+          <p>To run it now, open the workflow page and click <strong>Run workflow</strong>.</p>
           <div class="actions">
             <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml" target="_blank" rel="noreferrer">Open the workflow</a>
           </div>
@@ -156,8 +154,8 @@
 
         <section class="section">
           <h2>Sites and exclusions</h2>
-          <p>These are the websites currently checked by the scan and the sections that are excluded.</p>
-          <p>You can update this in <strong>sites.yml</strong>, or ask an AI agent to make the change for you.</p>
+          <p>These are the sites being checked and the sections that are excluded.</p>
+          <p>Update <strong>sites.yml</strong> or ask an AI agent to do it for you.</p>
           <div class="actions">
             <a class="button" href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml" target="_blank" rel="noreferrer">Open sites.yml</a>
           </div>
@@ -170,8 +168,8 @@
 
         <section class="section">
           <h2>Manual IPW upload</h2>
-          <p>Sometimes a sitemap cannot be pulled automatically. We already know that <strong>ipw.com</strong> is one of those cases.</p>
-          <p>If you want to scan IPW right now, open the IPW sitemap in your browser, save the file, and upload it through the GitHub form. The form already fills in the title for you, and the description is optional.</p>
+          <p><strong>ipw.com</strong> sometimes cannot be pulled automatically.</p>
+          <p>Open the sitemap, save it, and upload it through the GitHub form. The title is already filled in. Notes are optional.</p>
           <div class="status-grid">
             <article class="status-card">
               <div class="eyebrow">Last IPW upload processed</div>
@@ -182,7 +180,7 @@
               <div class="value" id="last-upload-result">Loading…</div>
             </article>
           </div>
-          <p>After you submit the form, the automation saves the sitemap into the repo and runs the scan again.</p>
+          <p>After you submit the form, the automation saves the file and runs the scan again.</p>
           <div class="actions">
             <a class="button" href="https://www.ipw.com/sitemap.xml" target="_blank" rel="noreferrer">Open IPW sitemap</a>
             <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml" target="_blank" rel="noreferrer">Open IPW upload form</a>
