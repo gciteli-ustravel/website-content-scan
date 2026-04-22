@@ -43,15 +43,62 @@ The automation runs on a weekly schedule and can also be triggered manually at a
 
 This section covers everything you need to operate the system. All steps use the GitHub web interface or the dashboard — no software installation or command-line access is required.
 
-### Accessing the Repository
+---
 
-The automation lives in the GitHub repository at:
+### Setting Up for a New Owner
+
+If you are taking over ownership of this automation from someone else, work through these steps before anything else. If the system is already running and you just need to use it, skip to [Opening the Dashboard](#opening-the-dashboard).
+
+**Step 1 — Get repository access**
+
+You need a GitHub account and collaborator access to the repository. If you do not have one yet, create a free account at **github.com**.
+
+Ask the current owner or your GitHub organization administrator to invite you as a collaborator. They do this by going to the repository, clicking **Settings**, selecting **Collaborators and teams** in the left sidebar, and searching for your GitHub username. You will receive an email invitation — accept it to gain access.
+
+Once accepted, the repository is available at:
 
 **github.com/gzciteli/website-content-scan**
 
-You will need a GitHub account with read access to view the dashboard and workflow history. To run the workflow manually or submit an IPW sitemap upload, you will also need write access to the repository.
+For all day-to-day tasks in this guide, the GitHub web interface is sufficient. If you ever need a local copy of the files on your computer — for example, to make more complex edits — download **GitHub Desktop** from desktop.github.com. It allows you to work with the repository without using the terminal.
 
-If you do not have access, contact whoever manages your GitHub organization settings.
+**Step 2 — Verify the system is running**
+
+Open the dashboard at **https://gzciteli.github.io/website-content-scan/** and confirm:
+
+- **Latest result** shows **success**
+- **Smartsheet connection** shows **Connected**
+- **Last time it ran** shows a recent date
+
+If all three look healthy, the system is working and you can proceed to operate it normally. If any card shows an error or an outdated date, see [Troubleshooting](#7-troubleshooting).
+
+**Step 3 — Set up SmartSheet credentials (only needed if starting fresh)**
+
+The automation connects to SmartSheet using an API token. This token is stored securely in GitHub. If you are taking over a working system, the token is already in place and you do not need to do anything. If you are setting up from scratch or the credentials have been lost, follow these steps.
+
+*Get an API token from SmartSheet:*
+
+1. Log in to SmartSheet and click your profile icon in the top-right corner.
+2. Select **Apps & Integrations**.
+3. Under **API Access**, click **Generate new access token**.
+4. Give the token a name (e.g., "Website Content Scan") and confirm.
+5. Copy the token that appears. **This is the only time you will be able to see it.** Paste it somewhere safe temporarily.
+
+*Get the Sheet ID:*
+
+1. Open the Website Content Scan sheet in SmartSheet.
+2. Go to **File > Properties**.
+3. The **Sheet ID** is listed there as a long number. Copy it.
+
+*Save both values as GitHub Secrets:*
+
+1. Go to the repository at **github.com/gzciteli/website-content-scan**.
+2. Click **Settings** in the top navigation bar.
+3. In the left sidebar, click **Secrets and variables**, then **Actions**.
+4. Click **New repository secret**.
+5. For the first secret: Name it `SMARTSHEET_ACCESS_TOKEN` and paste the API token as the value. Click **Add secret**.
+6. Repeat for the second secret: Name it `SMARTSHEET_SHEET_ID` and paste the Sheet ID as the value. Click **Add secret**.
+
+Once both secrets are saved, run the workflow manually (see [Running the Workflow Manually](#running-the-workflow-manually)) and confirm the **Smartsheet connection** card on the dashboard shows **Connected**.
 
 ---
 
@@ -61,21 +108,7 @@ The dashboard is the primary interface for checking status and taking action. Op
 
 **https://gzciteli.github.io/website-content-scan/**
 
-The dashboard is titled **Sitemap Automation**. It shows the following status cards at the top of the page:
-
-| Card | What it shows |
-|---|---|
-| Last time it ran | Date and time of the most recent workflow run |
-| Next automatic fetch | When the next scheduled run will happen, displayed in your local time |
-| Latest result | Whether the last run succeeded or failed |
-| Smartsheet connection | Whether the SmartSheet API connection is healthy |
-| Pages added last run | How many new pages were added; click **See which pages** to open the full list |
-
-Below the status cards, the dashboard includes:
-
-- A button to open the workflow and run it manually
-- A section for the IPW manual upload, including links to the IPW sitemap and the upload form
-- A sites and exclusions section showing which sites are currently being scanned and which sections are excluded, with a link to `sites.yml`
+The dashboard is titled **Sitemap Automation**. At the top it shows five status cards: when the automation last ran, when the next scheduled run is (in your local time), whether the last run succeeded, whether SmartSheet is connected, and how many pages were added. Below that are sections for the IPW manual upload and for viewing and editing the list of scanned sites.
 
 ---
 
@@ -128,22 +161,9 @@ ipw.com occasionally blocks automated sitemap requests, even though the sitemap 
 6. The title is already filled in — you do not need to change it. Notes are optional.
 7. Click **Submit new issue**.
 
-After submission, the automation detects the uploaded file, saves it into the repository, and runs the full content scan automatically. You do not need to take any further action. When the process completes, the issue will be closed with a confirmation comment, and the dashboard will reflect the updated status.
+After submission, the automation detects the uploaded file, saves it into the repository, and immediately runs the full content scan — the same scan that runs on the weekly schedule. You do not need to trigger anything separately. When the process completes, the GitHub issue will be closed automatically with a confirmation comment, and the dashboard will reflect the updated results.
 
-The **Manual IPW upload** section of the dashboard also shows the date of the last processed upload and whether it succeeded, so you can confirm the file was received.
-
----
-
-### Updating `sites.yml` If Needed
-
-`sites.yml` is the configuration file that controls which sites are scanned and which page sections are excluded from the scan. Most users will not need to edit this file regularly.
-
-When a change is needed — for example, adding a new website or excluding a new section — you have two options:
-
-- **Edit directly in GitHub:** Use the **Open sites.yml** button in the dashboard's Sites and exclusions section. On the file page, click the pencil icon to edit it in your browser. The file includes comments that explain each option.
-- **Ask an AI assistant:** Describe the change you want (e.g., "add example.org to the scan" or "exclude /events from esto.ustravel.org") and share the file contents. An AI assistant can prepare the updated file for you to paste in.
-
-Changes to `sites.yml` take effect the next time the workflow runs.
+The **Manual IPW upload** section of the dashboard shows the date of the last processed upload and whether it succeeded, so you can confirm the file was received and the scan ran.
 
 ---
 
