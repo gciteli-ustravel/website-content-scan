@@ -12,7 +12,6 @@ on:
       - opened
       - edited
       - reopened
-      - labeled
 
 permissions:
   contents: write
