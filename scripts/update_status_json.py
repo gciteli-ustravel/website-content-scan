@@ -31,6 +31,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--smartsheet-connection-ok")
     parser.add_argument("--summary-json", type=Path)
     parser.add_argument("--connection-json", type=Path)
+    parser.add_argument("--workflow-version")
+    parser.add_argument("--workflow-ref")
+    parser.add_argument("--workflow-sha")
     return parser.parse_args()
 
 
@@ -69,6 +72,13 @@ def main() -> int:
     parsed_connection = parse_bool(args.smartsheet_connection_ok)
     if parsed_connection is not None:
         current["smartsheet_connection_ok"] = parsed_connection
+
+    if args.workflow_version not in (None, ""):
+        current["workflow_version"] = args.workflow_version
+    if args.workflow_ref not in (None, ""):
+        current["workflow_ref"] = args.workflow_ref
+    if args.workflow_sha not in (None, ""):
+        current["workflow_sha"] = args.workflow_sha
 
     current["updated_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
     args.path.parent.mkdir(parents=True, exist_ok=True)

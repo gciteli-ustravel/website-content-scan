@@ -1,5 +1,8 @@
 name: Website Content Scan Admin
 
+env:
+  WORKFLOW_VERSION: "Sitemap Automation branch build 2026-04-22"
+
 on:
   workflow_dispatch:
   schedule:
@@ -23,6 +26,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
+
+      - name: Confirm workflow version
+        run: |
+          echo "::notice title=Workflow identity::${WORKFLOW_VERSION}"
+          echo "::notice title=Git ref::${GITHUB_REF_NAME}"
+          echo "::notice title=Git commit::${GITHUB_SHA}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -78,7 +87,10 @@ jobs:
             --last-run-result "$result" \
             --message "$message" \
             --summary-json .tmp/scan-summary.json \
-            --smartsheet-connection-ok "${{ steps.connection.outputs.ok }}"
+            --smartsheet-connection-ok "${{ steps.connection.outputs.ok }}" \
+            --workflow-version "${WORKFLOW_VERSION}" \
+            --workflow-ref "${GITHUB_REF_NAME}" \
+            --workflow-sha "${GITHUB_SHA}"
 
       - name: Commit dashboard status
         run: |
@@ -103,6 +115,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
+
+      - name: Confirm workflow version
+        run: |
+          echo "::notice title=Workflow identity::${WORKFLOW_VERSION}"
+          echo "::notice title=Git ref::${GITHUB_REF_NAME}"
+          echo "::notice title=Git commit::${GITHUB_SHA}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -185,7 +203,10 @@ jobs:
             --last-run-result "$scan_result" \
             --message "$upload_message" \
             --summary-json .tmp/scan-summary.json \
-            --smartsheet-connection-ok "${{ steps.connection.outputs.ok }}"
+            --smartsheet-connection-ok "${{ steps.connection.outputs.ok }}" \
+            --workflow-version "${WORKFLOW_VERSION}" \
+            --workflow-ref "${GITHUB_REF_NAME}" \
+            --workflow-sha "${GITHUB_SHA}"
 
       - name: Commit sitemap and dashboard updates
         run: |
