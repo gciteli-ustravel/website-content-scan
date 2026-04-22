@@ -6,7 +6,6 @@ env:
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 6"
     - cron: "0 1 * * 6"
   issues:
     types:
@@ -23,48 +22,30 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
-      - name: Check scheduled run window
-        id: schedule_gate
-        if: github.event_name == 'schedule'
-        run: |
-          current_et="$(TZ=America/New_York date +'%u:%H')"
-          echo "Current Eastern time marker: ${current_et}"
-          if [ "${current_et}" = "5:20" ]; then
-            echo "should_run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_run=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Check out repository
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
       - name: Confirm workflow version
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         run: |
           echo "::notice title=Workflow identity::${WORKFLOW_VERSION}"
           echo "::notice title=Git ref::${GITHUB_REF_NAME}"
           echo "::notice title=Git commit::${GITHUB_SHA}"
 
       - name: Set up Python
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install dependencies
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         run: pip install -r requirements.txt
 
       - name: Refresh site summary
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         run: python scripts/generate_sites_summary.py --config sites.yml --output docs/sites-summary.json
 
       - name: Run website content scan
         id: scan
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         env:
           SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
           SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
@@ -78,7 +59,6 @@ jobs:
 
       - name: Check Smartsheet connection
         id: connection
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         env:
           SMARTSHEET_ACCESS_TOKEN: ${{ secrets.SMARTSHEET_ACCESS_TOKEN }}
           SMARTSHEET_SHEET_ID: ${{ secrets.SMARTSHEET_SHEET_ID }}
@@ -95,7 +75,6 @@ jobs:
           exit 0
 
       - name: Update dashboard status
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         run: |
           message="Website Content Scan completed."
           result="success"
@@ -114,7 +93,6 @@ jobs:
             --workflow-sha "${GITHUB_SHA}"
 
       - name: Commit dashboard status
-        if: github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true'
         run: |
           if git diff --quiet -- docs/status.json docs/sites-summary.json; then
             exit 0
@@ -126,7 +104,7 @@ jobs:
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Fail if scan failed
-        if: (github.event_name != 'schedule' || steps.schedule_gate.outputs.should_run == 'true') && steps.scan.outputs.exit_code != '0'
+        if: steps.scan.outputs.exit_code != '0'
         run: exit 1
 
   process-ipw-sitemap-upload:

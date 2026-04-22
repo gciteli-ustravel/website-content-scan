@@ -213,7 +213,7 @@
               </div>
             </article>
           </div>
-          <p>The automation also runs automatically every Friday at 8:00 PM ET. If the next scheduled fetch works for you, you do not need to run it manually.</p>
+          <p>The automation also runs automatically on Friday evening. If the next scheduled fetch works for you, you do not need to run it manually.</p>
           <p>To run it now, open the workflow page and click <strong>Run workflow</strong>.</p>
           <div class="actions">
             <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml" target="_blank" rel="noreferrer">Open the workflow</a>
@@ -289,37 +289,25 @@
       }
 
       function nextScheduledFetch() {
-        const targetFormatter = new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/New_York",
-          weekday: "short",
-          hour: "2-digit",
-          hour12: false,
-        });
-        const displayFormatter = new Intl.DateTimeFormat(undefined, {
-          timeZone: "America/New_York",
+        const next = new Date();
+        next.setUTCMinutes(0, 0, 0);
+        next.setUTCHours(1, 0, 0, 0);
+
+        const daysUntilSaturday = (6 - next.getUTCDay() + 7) % 7;
+        next.setUTCDate(next.getUTCDate() + daysUntilSaturday);
+
+        if (daysUntilSaturday === 0 && new Date() >= next) {
+          next.setUTCDate(next.getUTCDate() + 7);
+        }
+
+        return next.toLocaleString(undefined, {
           weekday: "long",
           month: "long",
           day: "numeric",
           hour: "numeric",
           minute: "2-digit",
-          timeZoneName: "short",
+          timeZoneName: "short"
         });
-
-        const next = new Date();
-        next.setUTCMinutes(0, 0, 0);
-        next.setUTCHours(next.getUTCHours() + 1);
-
-        for (let i = 0; i < 24 * 8; i += 1) {
-          const parts = targetFormatter.formatToParts(next);
-          const weekday = parts.find((part) => part.type === "weekday")?.value;
-          const hour = parts.find((part) => part.type === "hour")?.value;
-          if (weekday === "Fri" && hour === "20") {
-            return displayFormatter.format(next);
-          }
-          next.setUTCHours(next.getUTCHours() + 1);
-        }
-
-        return "Friday at 8:00 PM ET";
       }
 
       function escapeHtml(value) {
