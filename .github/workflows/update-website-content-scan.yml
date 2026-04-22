@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Refresh site summary
+        run: python scripts/generate_sites_summary.py --config sites.yml --output docs/sites-summary.json
+
       - name: Run website content scan
         id: scan
         env:
@@ -79,12 +82,12 @@ jobs:
 
       - name: Commit dashboard status
         run: |
-          if git diff --quiet -- docs/status.json; then
+          if git diff --quiet -- docs/status.json docs/sites-summary.json; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/status.json
+          git add docs/status.json docs/sites-summary.json
           git commit -m "Update dashboard status"
           git push origin HEAD:${{ github.ref_name }}
 
@@ -108,6 +111,9 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Refresh site summary
+        run: python scripts/generate_sites_summary.py --config sites.yml --output docs/sites-summary.json
 
       - name: Process issue attachment
         id: upload
@@ -183,12 +189,12 @@ jobs:
 
       - name: Commit sitemap and dashboard updates
         run: |
-          if git diff --quiet -- manual-sitemaps/ipw.com/sitemap.xml docs/status.json; then
+          if git diff --quiet -- manual-sitemaps/ipw.com/sitemap.xml docs/status.json docs/sites-summary.json; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add manual-sitemaps/ipw.com/sitemap.xml docs/status.json
+          git add manual-sitemaps/ipw.com/sitemap.xml docs/status.json docs/sites-summary.json
           git commit -m "Process IPW sitemap upload"
           git push origin HEAD:${{ github.event.repository.default_branch }}
 

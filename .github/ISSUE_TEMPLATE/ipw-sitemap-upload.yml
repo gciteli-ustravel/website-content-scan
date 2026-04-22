@@ -15,10 +15,12 @@ body:
         3. Drag that file into this issue so GitHub uploads it.
         4. Submit the issue.
 
+        The title is already filled in for you. You do not need to write a description unless there is something unusual to note.
+
         The automation will save the uploaded file into the repo and then run the content scan.
   - type: textarea
     id: notes
     attributes:
       label: Notes
-      description: Optional notes for the maintainer team.
-      placeholder: Add anything helpful here, then attach the sitemap file below this form before you submit.
+      description: Optional. Most of the time you can leave this blank.
+      placeholder: Optional notes only. Then attach the sitemap file below this form before you submit.

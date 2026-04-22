@@ -3,16 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Website Content Scan Admin</title>
+    <title>Website Scan</title>
     <style>
       :root {
-        --bg: #f4efe7;
-        --panel: #fffaf2;
+        --bg: #f5efe6;
+        --panel: #fffaf3;
         --ink: #1f2a30;
         --muted: #5d6a70;
         --accent: #0f6d62;
         --accent-soft: #d6eee7;
-        --line: #d7d1c8;
+        --line: #d8d0c5;
       }
       * { box-sizing: border-box; }
       body {
@@ -20,51 +20,72 @@
         font-family: Georgia, "Times New Roman", serif;
         color: var(--ink);
         background:
-          radial-gradient(circle at top left, #efe4d3 0, transparent 32rem),
-          linear-gradient(180deg, #f7f1e8 0%, #f2ece3 100%);
+          radial-gradient(circle at top left, #efe5d6 0, transparent 30rem),
+          linear-gradient(180deg, #f7f1e8 0%, #f2ebe2 100%);
       }
       main {
-        max-width: 960px;
+        max-width: 980px;
         margin: 0 auto;
-        padding: 32px 20px 48px;
+        padding: 28px 18px 40px;
       }
-      h1, h2 { margin: 0 0 12px; }
-      p { line-height: 1.55; }
-      .hero, .panel {
+      h1, h2, h3 {
+        margin: 0 0 12px;
+      }
+      p {
+        line-height: 1.6;
+        margin: 0 0 14px;
+      }
+      .intro, .section, .status-card, .site-card {
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 18px;
-        padding: 24px;
         box-shadow: 0 12px 30px rgba(31, 42, 48, 0.06);
       }
-      .hero { margin-bottom: 20px; }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 16px;
-        margin-bottom: 20px;
+      .intro, .section {
+        padding: 22px;
       }
-      .label {
-        display: block;
+      .intro {
+        margin-bottom: 18px;
+      }
+      .sections {
+        display: grid;
+        gap: 18px;
+      }
+      .status-grid, .site-grid {
+        display: grid;
+        gap: 14px;
+      }
+      .status-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin: 18px 0;
+      }
+      .site-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        margin-top: 18px;
+      }
+      .status-card, .site-card {
+        padding: 18px;
+      }
+      .eyebrow {
         color: var(--muted);
         font-size: 0.92rem;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
       }
       .value {
-        font-size: 1.15rem;
+        font-size: 1.08rem;
         font-weight: 700;
       }
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
-        margin-top: 18px;
+        margin-top: 16px;
       }
       .button {
         display: inline-block;
         text-decoration: none;
         background: var(--accent);
-        color: white;
+        color: #fff;
         padding: 12px 18px;
         border-radius: 999px;
         font-weight: 700;
@@ -73,84 +94,102 @@
         background: var(--accent-soft);
         color: var(--accent);
       }
-      .panels {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 16px;
-      }
-      ol, ul {
+      ul {
         margin: 0;
         padding-left: 20px;
         line-height: 1.6;
       }
-      .muted { color: var(--muted); }
-      code {
-        background: #f0ebe2;
-        padding: 0.1rem 0.35rem;
-        border-radius: 6px;
-        font-size: 0.95em;
+      .muted {
+        color: var(--muted);
+      }
+      .inline-note {
+        margin-top: 12px;
+        color: var(--muted);
+      }
+      .list-title {
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .pill {
+        display: inline-block;
+        background: #ece5db;
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 6px 10px;
+        margin: 0 8px 8px 0;
+        font-size: 0.95rem;
       }
     </style>
   </head>
   <body>
     <main>
-      <section class="hero">
-        <p class="muted">Website Content Scan Admin</p>
-        <h1>Keep the scan running without digging through the repo</h1>
-        <p>This page gives you the quickest path to run the automation, check its health, manage exclusions in <code>sites.yml</code>, and submit a manual IPW sitemap when Cloudflare blocks the automated fetch.</p>
-        <div class="actions">
-          <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml">Open the workflow</a>
-          <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml">Edit exclusions in sites.yml</a>
-          <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml">Submit IPW sitemap</a>
-        </div>
+      <section class="intro">
+        <div class="eyebrow">Website Scan</div>
+        <h1>What would you like to do?</h1>
+        <p>Use this page when you want to run the scan, review which sites and sections are included, or submit the IPW sitemap when it cannot be pulled automatically.</p>
       </section>
 
-      <section class="grid">
-        <article class="panel">
-          <span class="label">Last run</span>
-          <div class="value" id="last-run-at">Loading…</div>
-        </article>
-        <article class="panel">
-          <span class="label">Latest run result</span>
-          <div class="value" id="last-run-result">Loading…</div>
-        </article>
-        <article class="panel">
-          <span class="label">Smartsheet connection</span>
-          <div class="value" id="smartsheet-connection">Loading…</div>
-        </article>
-        <article class="panel">
-          <span class="label">Last IPW upload processed</span>
-          <div class="value" id="last-upload-at">Loading…</div>
-        </article>
-      </section>
+      <div class="sections">
+        <section class="section">
+          <h2>Run the workflow</h2>
+          <p>This is the main automation that updates the Website Content Scan in Smartsheet.</p>
+          <div class="status-grid">
+            <article class="status-card">
+              <div class="eyebrow">Last time it ran</div>
+              <div class="value" id="last-run-at">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Latest result</div>
+              <div class="value" id="last-run-result">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Smartsheet connection</div>
+              <div class="value" id="smartsheet-connection">Loading…</div>
+            </article>
+          </div>
+          <p>To run it right now, open the workflow page and click <strong>Run workflow</strong>.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/gzciteli/website-content-scan/actions/workflows/update-website-content-scan.yml">Open the workflow</a>
+          </div>
+          <p id="message" class="inline-note">Loading latest workflow message…</p>
+        </section>
 
-      <section class="panels">
-        <article class="panel">
-          <h2>IPW manual sitemap</h2>
-          <p class="muted">Use this only when IPW blocks the automated sitemap fetch.</p>
-          <ol>
-            <li>Open the IPW sitemap in your browser.</li>
-            <li>Save it as <code>sitemap.xml</code>.</li>
-            <li>Use the upload button on this page to open the GitHub submission form.</li>
-            <li>Drag the file into the issue and submit it.</li>
-          </ol>
+        <section class="section">
+          <h2>Sites and exclusions</h2>
+          <p>These are the websites currently checked by the scan and the sections that are excluded.</p>
+          <p>You can update this in <strong>sites.yml</strong> or use the GitHub request form below. You can also ask an AI agent to make the change for you.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml">Open sites.yml</a>
+            <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=sites-and-exclusions-request.yml">Request a change</a>
+          </div>
+          <div class="site-grid" id="site-list">
+            <article class="site-card">
+              <div class="value">Loading current sites…</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Manual IPW upload</h2>
+          <p>Sometimes a sitemap cannot be pulled automatically. We already know that <strong>ipw.com</strong> is one of those cases.</p>
+          <p>If you want to scan IPW right now, open the IPW sitemap in your browser, save the file, and upload it through the GitHub form. The form already fills in the title for you, and the description is optional.</p>
+          <div class="status-grid">
+            <article class="status-card">
+              <div class="eyebrow">Last IPW upload processed</div>
+              <div class="value" id="last-upload-at">Loading…</div>
+            </article>
+            <article class="status-card">
+              <div class="eyebrow">Latest upload result</div>
+              <div class="value" id="last-upload-result">Loading…</div>
+            </article>
+          </div>
+          <p>After you submit the form, the automation saves the sitemap into the repo and runs the scan again.</p>
           <div class="actions">
             <a class="button" href="https://www.ipw.com/sitemap.xml">Open IPW sitemap</a>
-            <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml">Upload through GitHub form</a>
+            <a class="button secondary" href="https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml">Open IPW upload form</a>
           </div>
-        </article>
-
-        <article class="panel">
-          <h2>Helpful links</h2>
-          <ul>
-            <li><a href="https://github.com/gzciteli/website-content-scan/blob/main/sites.yml">Edit included and excluded sections in <code>sites.yml</code></a></li>
-            <li><a href="https://github.com/gzciteli/website-content-scan/tree/main/manual-sitemaps">Open the manual sitemap folder</a></li>
-            <li><a href="https://github.com/gzciteli/website-content-scan/blob/main/CHECKLIST.md">Open the validation checklist</a></li>
-            <li><a href="https://github.com/gzciteli/website-content-scan/blob/main/README.md">Open the main repo instructions</a></li>
-          </ul>
-          <p id="message" class="muted" style="margin-top: 16px;">Loading latest status message…</p>
-        </article>
-      </section>
+        </section>
+      </div>
     </main>
 
     <script>
@@ -167,6 +206,32 @@
         return "Not checked yet";
       }
 
+      function renderSites(summary) {
+        const container = document.getElementById("site-list");
+        if (!summary || !Array.isArray(summary.sites) || summary.sites.length === 0) {
+          container.innerHTML = '<article class="site-card"><div class="value">No site summary is available yet.</div></article>';
+          return;
+        }
+
+        container.innerHTML = summary.sites.map((site) => {
+          const exclusions = site.excluded_sections && site.excluded_sections.length
+            ? site.excluded_sections.map((item) => `<span class="pill">${item}</span>`).join("")
+            : '<span class="muted">No excluded sections</span>';
+          const fallback = site.uses_manual_fallback
+            ? `<p class="inline-note">Manual fallback file: ${site.manual_fallback_file}</p>`
+            : "";
+          return `
+            <article class="site-card">
+              <h3>${site.name}</h3>
+              <p class="muted">Sitemap: ${site.sitemap}</p>
+              <div class="list-title">Excluded sections</div>
+              <div>${exclusions}</div>
+              ${fallback}
+            </article>
+          `;
+        }).join("");
+      }
+
       fetch("./status.json")
         .then((response) => response.json())
         .then((status) => {
@@ -174,15 +239,22 @@
           document.getElementById("last-run-result").textContent = status.last_run_result || "Not available yet";
           document.getElementById("smartsheet-connection").textContent = textForConnection(status.smartsheet_connection_ok);
           document.getElementById("last-upload-at").textContent = formatTimestamp(status.last_upload_processed_at);
-          document.getElementById("message").textContent = status.message || "No status message has been recorded yet.";
+          document.getElementById("last-upload-result").textContent = status.last_upload_result || "Not available yet";
+          document.getElementById("message").textContent = status.message || "No workflow message has been recorded yet.";
         })
         .catch(() => {
           document.getElementById("last-run-at").textContent = "Status file not available";
           document.getElementById("last-run-result").textContent = "Status file not available";
           document.getElementById("smartsheet-connection").textContent = "Status file not available";
           document.getElementById("last-upload-at").textContent = "Status file not available";
+          document.getElementById("last-upload-result").textContent = "Status file not available";
           document.getElementById("message").textContent = "The dashboard status file could not be loaded yet.";
         });
+
+      fetch("./sites-summary.json")
+        .then((response) => response.json())
+        .then((summary) => renderSites(summary))
+        .catch(() => renderSites(null));
     </script>
   </body>
 </html>

@@ -15,7 +15,7 @@ This repo powers the automation that scans website sitemaps and updates the Webs
 Most users only need these three things:
 
 1. Open the GitHub Actions workflow called **Website Content Scan Admin** to run the update.
-2. Edit `sites.yml` when sections should be excluded from the scan.
+2. Edit `sites.yml` or use the GitHub request form when sections should be included or excluded from the scan.
 3. Use the IPW sitemap upload form if IPW blocks the automated fetch.
 
 ## Exclusions Live In `sites.yml`
@@ -33,6 +33,8 @@ The automation also supports:
 - `fallback_sitemap_file` for manual sitemap backups
 - `allow_sitemap_errors: true` to skip a blocked site without failing the whole run
 
+If you do not want to edit `sites.yml` yourself, use the GitHub request form from the dashboard and describe the change in plain language.
+
 ## Manual IPW Sitemap Upload
 
 IPW can block automated sitemap access. When that happens:
@@ -40,7 +42,7 @@ IPW can block automated sitemap access. When that happens:
 1. Open `https://www.ipw.com/sitemap.xml` in a browser.
 2. Save the file as `sitemap.xml`.
 3. Open the GitHub IPW sitemap upload issue form.
-4. Drag the file into the issue and submit it.
+4. Drag the file into the issue and submit it. The form already fills in the title, and notes are optional.
 
 The workflow will place the file into `manual-sitemaps/ipw.com/sitemap.xml` and then run the scan.
 

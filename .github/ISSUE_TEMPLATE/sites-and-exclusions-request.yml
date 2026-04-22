@@ -1,0 +1,45 @@
+name: Sites and exclusions request
+description: Ask for a site or exclusion update in the scan settings.
+title: "[Sites and Exclusions Request] "
+labels:
+  - sites-config-request
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form if you want to change which websites or sections are scanned.
+
+        You do not need to write this in technical language. A short plain-English request is enough.
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: What would you like to change?
+      options:
+        - Add a new website
+        - Remove a website
+        - Exclude a section from a website
+        - Remove an exclusion
+        - Update a sitemap URL
+    validations:
+      required: true
+  - type: input
+    id: site_name
+    attributes:
+      label: Website or site name
+      placeholder: "Example: esto.ustravel.org"
+    validations:
+      required: true
+  - type: input
+    id: path_or_url
+    attributes:
+      label: Section path or sitemap URL
+      description: Add the exclusion path or sitemap URL if you know it.
+      placeholder: "Example: /news or https://www.example.org/sitemap.xml"
+  - type: textarea
+    id: request_details
+    attributes:
+      label: What should change?
+      description: Describe what you want in plain language. We will use this to update sites.yml.
+      placeholder: "Example: Please stop scanning the child pages under /press, but keep the main /press page."
+    validations:
+      required: true
