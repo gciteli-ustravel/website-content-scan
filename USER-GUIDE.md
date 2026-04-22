@@ -1,3 +1,7 @@
+**HEADS UP: Please check if you are within a U.S. Travel production repository. This User Guide may be within Gabriel Citeli's (Intern, 2026) personal GitHub account, which was used for the original setup of this repo. 
+If you are the current owner or administrator of this repo, you should be using your team's forked version, not this one (remove this note from your forked version).
+If you reached this guide through an internal link, that link should be updated.**
+
 # Website Content Scan Automation — User Guide
 
 ---
