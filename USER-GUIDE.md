@@ -400,29 +400,6 @@ This backup is not part of the normal workflow and is intended only for emergenc
 
 ## 10. Appendix
 
-### Sites Currently in the Scan
-
-| Site | Sitemap URL | Excluded Sections |
-|---|---|---|
-| ustravel.org | https://www.ustravel.org/sitemap.xml | / (homepage), /news, /press, /research |
-| ipw.com | https://www.ipw.com/sitemap.xml | None (manual fallback used if blocked) |
-| esto.ustravel.org | https://www.esto.ustravel.org/sitemap.xml | /attendees, /events, /speakers |
-
----
-
-### SmartSheet Column Reference
-
-| Column | Set by | Notes |
-|---|---|---|
-| URL | Automation | Full page URL, normalized to avoid duplicates |
-| Site | Automation | Site name from `sites.yml` |
-| Page | Automation | Top-level path segment |
-| Sub-Page | Automation | Second-level path segment, if applicable |
-| Page Status | Automation | **Not Started** for new pages; **Page Expired** for removed pages |
-| Last Updated | Automation | From sitemap; not always present for every page |
-
----
-
 ### Quick Reference — Where to Find Things
 
 | Task | Where to go |
@@ -449,3 +426,105 @@ This backup is not part of the normal workflow and is intended only for emergenc
 | sites.yml | https://github.com/gzciteli/website-content-scan/blob/main/sites.yml |
 | IPW upload form | https://github.com/gzciteli/website-content-scan/issues/new?template=ipw-sitemap-upload.yml |
 | MAINTAINERS.md | https://github.com/gzciteli/website-content-scan/blob/main/MAINTAINERS.md |
+
+---
+
+### Sites Currently in the Scan
+
+| Site | Sitemap URL | Excluded Sections |
+|---|---|---|
+| ustravel.org | https://www.ustravel.org/sitemap.xml | / (homepage), /news, /press, /research |
+| ipw.com | https://www.ipw.com/sitemap.xml | None (manual fallback used if blocked) |
+| esto.ustravel.org | https://www.esto.ustravel.org/sitemap.xml | /attendees, /events, /speakers |
+
+---
+
+### SmartSheet Column Reference
+
+| Column | Set by | Notes |
+|---|---|---|
+| URL | Automation | Full page URL, normalized to avoid duplicates |
+| Site | Automation | Site name from `sites.yml` |
+| Page | Automation | Top-level path segment |
+| Sub-Page | Automation | Second-level path segment, if applicable |
+| Page Status | Automation | **Not Started** for new pages; **Page Expired** for removed pages |
+| Last Updated | Automation | From sitemap; not always present for every page |
+
+---
+
+### AI Maintenance Guide
+
+This section is written for situations where an AI assistant — such as ChatGPT or Claude — is being used to help maintain this system. It provides technical context that is not needed for day-to-day use but that an AI needs in order to give accurate, useful guidance.
+
+**Why this lives in GitHub**
+
+The automation is hosted in a GitHub repository because GitHub provides free, reliable infrastructure for three things this system depends on: automated workflows (GitHub Actions), a public status dashboard (GitHub Pages), and a structured way to receive user input (GitHub Issues). Together, these allow the scan to run on a schedule, publish its results to a dashboard, and accept manual sitemap uploads — all without requiring any server, database, or ongoing technical maintenance beyond occasional configuration changes.
+
+**Repository location**
+
+The repository is at **github.com/gzciteli/website-content-scan**. It is owned by the GitHub organization account `gzciteli`. All files referenced in this guide live in the `main` branch.
+
+**Repository file structure**
+
+```
+website-content-scan/
+├── sites.yml                        The main configuration file: sites and exclusions
+├── docs/
+│   ├── index.html                   The dashboard (served via GitHub Pages)
+│   ├── status.json                  Written by the workflow after each run; drives the dashboard
+│   └── sites-summary.json           Written by the workflow; drives the sites section of the dashboard
+├── manual-sitemaps/
+│   └── ipw.com/
+│       └── sitemap.xml              Receives the IPW manual upload
+├── scripts/
+│   ├── update_scan.py               Main scan logic: reads sitemaps, writes to SmartSheet
+│   ├── update_status_json.py        Updates docs/status.json after a run
+│   ├── generate_sites_summary.py    Updates docs/sites-summary.json from sites.yml
+│   ├── check_smartsheet_connection.py  Verifies the SmartSheet API is reachable
+│   └── process_ipw_issue.py         Extracts the sitemap file from a GitHub issue attachment
+├── .github/
+│   ├── workflows/
+│   │   └── update-website-content-scan.yml   The GitHub Actions workflow
+│   └── ISSUE_TEMPLATE/
+│       └── ipw-sitemap-upload.yml            The IPW upload form template
+├── MAINTAINERS.md                   Emergency Excel fallback instructions (technical users only)
+└── requirements.txt                 Python dependencies (requests, smartsheet-python-sdk)
+```
+
+**How the workflow triggers**
+
+The single workflow file (`update-website-content-scan.yml`) responds to three different events:
+
+- **Scheduled:** Runs automatically every Saturday at 1:00 AM UTC (Friday evening in U.S. time zones) via a GitHub cron schedule.
+- **Manual:** Can be triggered by any collaborator from the GitHub Actions tab using the "Run workflow" button.
+- **Issue submission:** When a GitHub issue is opened, edited, or reopened with the label `ipw-sitemap-upload` or a title beginning with `[IPW Sitemap Upload]`, the workflow extracts the attached sitemap file, saves it to `manual-sitemaps/ipw.com/sitemap.xml`, and immediately runs the full content scan.
+
+**GitHub Secrets required**
+
+These two secrets must be present in the repository for the scan to write to SmartSheet. They are set under **Settings > Secrets and variables > Actions** in the repository.
+
+| Secret name | What it holds |
+|---|---|
+| `SMARTSHEET_ACCESS_TOKEN` | A SmartSheet API personal access token with editor access to the sheet |
+| `SMARTSHEET_SHEET_ID` | The numeric ID of the Website Content Scan sheet |
+
+If either secret is missing or expired, the **Smartsheet connection** card on the dashboard will show **Needs attention** after the next run.
+
+**How to navigate GitHub without terminal access**
+
+If you are helping a user through GitHub's web interface, the key locations are:
+
+- **Repository home:** github.com/gzciteli/website-content-scan — shows all files, the README, and top-level navigation
+- **Actions tab:** github.com/gzciteli/website-content-scan/actions — lists all workflow runs; click any run to see logs; use the "Run workflow" button to trigger a manual run
+- **Settings > Secrets:** github.com/gzciteli/website-content-scan/settings/secrets/actions — where API credentials are stored; secrets can be added or updated but their values cannot be read back after saving
+- **Editing a file:** Navigate to the file (e.g., `sites.yml`), click the pencil icon top-right, make edits in the browser editor, then click **Commit changes** and use the default option to commit directly to `main`
+- **Issues tab:** github.com/gzciteli/website-content-scan/issues — where IPW upload submissions appear; the IPW upload form is accessed via **New issue**
+
+**Common maintenance tasks an AI can help with**
+
+- *Adding a site:* Ask the user to open `sites.yml` in GitHub, copy its contents, and share them. Provide updated YAML with the new site entry. Walk the user through clicking the pencil icon, replacing the content, and committing.
+- *Adding an exclusion:* Same process — ask for the current `sites.yml` contents and provide the updated version with the new path added under `exclude_paths`.
+- *Fixing a failed run:* Ask the user to open the Actions tab, click the failed run, and paste the error from the failed step. Most failures are either a network timeout (re-run to fix) or a SmartSheet credential issue (update the secret).
+- *Updating SmartSheet credentials:* Walk the user through SmartSheet's **Apps & Integrations > API Access** to generate a new token, then through GitHub's **Settings > Secrets and variables > Actions** to update `SMARTSHEET_ACCESS_TOKEN`.
+- *Checking what pages were added:* Direct the user to the dashboard's **Pages added last run** card and the **See which pages** popup.
+- *Emergency recovery:* If the normal automation is broken, refer to `MAINTAINERS.md` in the repository. The file documents a local Excel-based fallback that a maintainer or AI can help execute.
