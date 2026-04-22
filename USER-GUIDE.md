@@ -358,36 +358,19 @@ Wait one to two minutes and refresh the page. The dashboard is published by GitH
 
 ## 8. Maintenance / Updating the System
 
-### Adding a New Site to the Scan
-
-Open `sites.yml` in GitHub — the dashboard's Sites and exclusions section includes a direct **Open sites.yml** link. Add a new entry following the pattern of the existing sites. At minimum, a new site needs a `name` and a `sitemap` URL. An AI assistant can prepare the update for you if you describe what you want.
-
-Changes take effect on the next workflow run.
+**A note on AI assistance:** Most maintenance tasks in this section can be handled with the help of an AI assistant such as ChatGPT or Claude. You do not need to understand the technical details to make changes — describe what you want to do and share the relevant file contents, and the assistant can prepare the changes for you to apply through the GitHub web interface. The Appendix includes a section with guidance specifically written for this kind of AI-assisted maintenance.
 
 ---
 
-### Updating Exclusions
+### Adding or Removing Sites, or Updating Exclusions
 
-Exclusions are managed within `sites.yml` under the `exclude_paths` key for each site. To exclude a new section, add its path to the list. To stop excluding a section, remove it.
-
-Exclusion paths use a prefix rule: `/news` excludes all pages whose path starts with `/news/`, but the `/news` landing page itself is still included. To exclude only the homepage, use `/`.
-
----
-
-### Removing a Site from the Scan
-
-Open `sites.yml` and delete the entry for the site you want to remove. The automation will stop scanning it on the next run. Existing rows in SmartSheet will not be affected — they will not be automatically removed.
+To add a new website to the scan, remove an existing one, or change which sections of a site are excluded, see the [`sites.yml` section in Key Components](#sites.yml--adding-sites-and-managing-exclusions). That section covers how to edit the file directly in GitHub or with AI assistance.
 
 ---
 
 ### Rotating SmartSheet Credentials
 
-If the SmartSheet API token is rotated or expires, the new token must be updated in the repository's GitHub Secrets. This is done under **Settings > Secrets and variables > Actions** in the repository. The relevant secrets are:
-
-- `SMARTSHEET_ACCESS_TOKEN` — the SmartSheet API token
-- `SMARTSHEET_SHEET_ID` — the numeric ID of the Website Content Scan sheet
-
-Updating secrets requires repository admin access. If you are not comfortable with this step, ask a technical maintainer.
+If the SmartSheet API token is rotated or expires, the new token must be updated in GitHub Secrets. For step-by-step instructions on finding the token in SmartSheet and saving it to GitHub, see [Setting Up for a New Owner](#setting-up-for-a-new-owner) in the Getting Started section — the same steps apply.
 
 ---
 
