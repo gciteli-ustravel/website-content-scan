@@ -1,7 +1,3 @@
-**HEADS UP: Please check if you are within a U.S. Travel production repository. This User Guide may be within Gabriel Citeli's (Intern, 2026) personal GitHub account, which was used for the original setup of this repo. 
-If you are the current owner or administrator of this repo, you should be using your team's forked version, not this one (remove this note from your forked version).
-If you reached this guide through an internal link, that link should be updated.**
-
 # Website Content Scan Automation — User Guide
 
 ---
@@ -32,7 +28,7 @@ The automation runs on a weekly schedule and can also be triggered manually at a
 - Identifies pages not yet in SmartSheet
 - Adds new pages with their URL, Site, Page, Sub-Page, and Last Updated fields populated
 - Marks pages that have been removed from the site as Page Expired
-- Reports results to a live dashboard at https://{your profile}.github.io/website-content-scan/
+- Reports results to a live dashboard at https://gciteli-ustravel.github.io/website-content-scan/
 
 **What this system does not do:**
 
@@ -87,7 +83,7 @@ After a minute or two, the dashboard will be published at **https://{your-org}.g
 
 **Step 2 — Verify the system is running**
 
-Open the dashboard at **https://{your profile}.github.io/website-content-scan/** and confirm:
+Open the dashboard at **https://gciteli-ustravel.github.io/website-content-scan/** and confirm:
 
 - **Latest result** shows **success**
 - **Smartsheet connection** shows **Connected**
@@ -130,7 +126,7 @@ Once both secrets are saved, run the workflow manually (see [Running the Workflo
 
 The dashboard is the primary interface for checking status and taking action. Open it at:
 
-**https://{your profile}.github.io/website-content-scan/**
+**https://gciteli-ustravel.github.io/website-content-scan/**
 
 The dashboard is titled **Sitemap Automation**. At the top it shows five status cards: when the automation last ran, when the next scheduled run is (in your local time), whether the last run succeeded, whether SmartSheet is connected, and how many pages were added. Below that are sections for the IPW manual upload and for viewing and editing the list of scanned sites.
 
@@ -177,10 +173,10 @@ ipw.com occasionally blocks automated sitemap requests, even though the sitemap 
 
 **Step-by-step:**
 
-1. Open **https://www.ipw.com/sitemap.xml** in Chrome.
+1. Open **[https://www.ipw.com/sitemap.xml](https://www.ipw.com/sitemap.xml)** in Chrome.
 2. In Chrome, go to **Right click > Save Page As**.
 3. Save the file to your computer.
-4. Return to the dashboard and click **Open IPW upload form**. This opens a GitHub issue form in a new tab.
+4. Return to the [dashboard]([url](https://gciteli-ustravel.github.io/website-content-scan/#:~:text=uploaded%20and%20saved.-,Manual%20IPW%20upload,-ipw.com%20sometimes%20cannot)) and click **Open IPW upload form**. This opens a GitHub issue form in a new tab.
 5. Drag the **sitemap.xml** file you saved into the issue form. You will see it appear as an attachment.
 6. The title is already filled in — you do not need to change it. Notes are optional.
 7. Click **Submit new issue**.
