@@ -176,7 +176,7 @@ ipw.com occasionally blocks automated sitemap requests, even though the sitemap 
 1. Open **[https://www.ipw.com/sitemap.xml](https://www.ipw.com/sitemap.xml)** in Chrome.
 2. In Chrome, go to **Right click > Save Page As**.
 3. Save the file to your computer.
-4. Return to the [dashboard]([url](https://gciteli-ustravel.github.io/website-content-scan/#:~:text=uploaded%20and%20saved.-,Manual%20IPW%20upload,-ipw.com%20sometimes%20cannot)) and click **Open IPW upload form**. This opens a GitHub issue form in a new tab.
+4. Return to the [dashboard](https://gciteli-ustravel.github.io/website-content-scan/#:~:text=uploaded%20and%20saved.-,Manual%20IPW%20upload,-ipw.com%20sometimes%20cannot) and click **Open IPW upload form**. This opens a GitHub issue form in a new tab.
 5. Drag the **sitemap.xml** file you saved into the issue form. You will see it appear as an attachment.
 6. The title is already filled in — you do not need to change it. Notes are optional.
 7. Click **Submit new issue**.
