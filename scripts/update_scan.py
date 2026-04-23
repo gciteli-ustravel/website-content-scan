@@ -399,11 +399,6 @@ def update_excel(input_path: Path, output_path: Path, pages: dict[str, SitemapPa
         added += 1
         added_pages.append(page_summary(page))
 
-    for key, row in existing.items():
-        if key not in pages:
-            ws.cell(row=row, column=headers["Page Status"], value=expired_status)
-            expired += 1
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
     workbook.save(output_path)
     return {
@@ -577,23 +572,6 @@ def update_smartsheet(sheet_id: str, pages: dict[str, SitemapPage], expired_stat
                 }
             )
             added_pages.append(page_summary(page))
-
-    for key, row in existing.items():
-        if key not in pages:
-            rows_to_update.append(
-                {
-                    "id": row["id"],
-                    "cells": [
-                        smartsheet_value_cell(
-                            columns["Page Status"],
-                            expired_status,
-                            strict=False,
-                            override_validation=True,
-                        )
-                    ],
-                }
-            )
-            expired += 1
 
     if rows_to_add:
         smartsheet_request("POST", f"{base_url}/sheets/{sheet_id}/rows", token, rows_to_add)
