@@ -1,36 +1,64 @@
 {
-  "last_run_at": "2026-06-27T04:57:06.065312+00:00",
+  "last_run_at": "2026-07-04T04:39:46.864177+00:00",
   "last_run_result": "success",
   "smartsheet_connection_ok": true,
   "last_upload_processed_at": "2026-04-23T16:28:28Z",
   "last_upload_result": "success",
   "message": "Website Content Scan completed.",
-  "updated_at": "2026-06-27T04:57:06.665972+00:00",
+  "updated_at": "2026-07-04T04:39:47.527028+00:00",
   "workflow_version": "Sitemap Automation branch build 2026-04-22",
   "workflow_ref": "main",
-  "workflow_sha": "7e30d04b81d3ec3cdf93d5f4c45d8db0fa27f444",
+  "workflow_sha": "dc5c5dfccc2379ca7516b232d5c45783963f1433",
   "last_run_summary": {
-    "added": 2,
+    "added": 6,
     "added_pages": [
       {
-        "url": "https://esto.ustravel.org/destination-day",
-        "site": "esto.ustravel.org",
-        "page": "/destination-day",
+        "url": "https://ustravel.org/address-travelers-misperceptions",
+        "site": "ustravel.org",
+        "page": "/address-travelers-misperceptions",
         "sub_page": "",
-        "last_updated": "2026-06-26"
+        "last_updated": "2026-06-30"
       },
       {
-        "url": "https://esto.ustravel.org/host-city",
-        "site": "esto.ustravel.org",
-        "page": "/host-city",
+        "url": "https://ustravel.org/build-relationship-us-customs-and-border-protection-cbp",
+        "site": "ustravel.org",
+        "page": "/build-relationship-us-customs-and-border-protection-cbp",
         "sub_page": "",
-        "last_updated": "2026-06-25"
+        "last_updated": "2026-06-30"
+      },
+      {
+        "url": "https://ustravel.org/extend-authentic-welcome",
+        "site": "ustravel.org",
+        "page": "/extend-authentic-welcome",
+        "sub_page": "",
+        "last_updated": "2026-06-30"
+      },
+      {
+        "url": "https://ustravel.org/know-us-entry-requirements",
+        "site": "ustravel.org",
+        "page": "/know-us-entry-requirements",
+        "sub_page": "",
+        "last_updated": "2026-06-30"
+      },
+      {
+        "url": "https://ustravel.org/prepare-smooth-arrival",
+        "site": "ustravel.org",
+        "page": "/prepare-smooth-arrival",
+        "sub_page": "",
+        "last_updated": "2026-06-30"
+      },
+      {
+        "url": "https://ustravel.org/promote-fast-lane",
+        "site": "ustravel.org",
+        "page": "/promote-fast-lane",
+        "sub_page": "",
+        "last_updated": "2026-06-30"
       }
     ],
-    "updated_last_updated": 136,
+    "updated_last_updated": 140,
     "expired": 0,
     "mode": "smartsheet",
-    "sitemap_pages_found": 140,
-    "finished_at": "2026-06-27T04:57:06.065312+00:00"
+    "sitemap_pages_found": 148,
+    "finished_at": "2026-07-04T04:39:46.864177+00:00"
   }
 }
