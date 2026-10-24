@@ -1,29 +1,113 @@
 {
-  "last_run_at": "2026-10-17T05:26:31.214773+00:00",
+  "last_run_at": "2026-10-24T05:35:49.437403+00:00",
   "last_run_result": "success",
   "smartsheet_connection_ok": true,
   "last_upload_processed_at": "2026-04-23T16:28:28Z",
   "last_upload_result": "success",
   "message": "Website Content Scan completed.",
-  "updated_at": "2026-10-17T05:26:31.819890+00:00",
+  "updated_at": "2026-10-24T05:35:50.078628+00:00",
   "workflow_version": "Sitemap Automation branch build 2026-04-22",
   "workflow_ref": "main",
-  "workflow_sha": "a1c5542f7f29bb1dee098d75d8e3578f4b85cdc9",
+  "workflow_sha": "7dd53e3b4a07f63435848c8cfac8de7c1feb53d9",
   "last_run_summary": {
-    "added": 1,
+    "added": 13,
     "added_pages": [
       {
-        "url": "https://ipw.com/where-travel-and-technology-converge",
+        "url": "https://ipw.com/2026-attendees",
         "site": "ipw.com",
-        "page": "/where-travel-and-technology-converge",
+        "page": "/2026-attendees",
         "sub_page": "",
-        "last_updated": "2026-10-13"
+        "last_updated": "2026-10-20"
+      },
+      {
+        "url": "https://ipw.com/about-ipw/2026-recap",
+        "site": "ipw.com",
+        "page": "/about-ipw",
+        "sub_page": "/2026-recap",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/about-ipw/future-dates",
+        "site": "ipw.com",
+        "page": "/about-ipw",
+        "sub_page": "/future-dates",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/affiliate-event-request-application",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/affiliate-event-request-application",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/booth-types",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/booth-types",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/booth-types/2027-pricing",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/booth-types/2027-pricing",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/booth-types/pricing-calculator",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/booth-types/pricing-calculator",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/first-time-exhibitors",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/first-time-exhibitors",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/media-marketplace",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/media-marketplace",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/member-benefits",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/member-benefits",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/secure-your-booth",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/secure-your-booth",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/exhibit/where-travel-and-technology-converge",
+        "site": "ipw.com",
+        "page": "/exhibit",
+        "sub_page": "/where-travel-and-technology-converge",
+        "last_updated": "2026-10-22"
+      },
+      {
+        "url": "https://ipw.com/travel",
+        "site": "ipw.com",
+        "page": "/travel",
+        "sub_page": "",
+        "last_updated": "2026-10-22"
       }
     ],
-    "updated_last_updated": 161,
+    "updated_last_updated": 150,
     "expired": 0,
     "mode": "smartsheet",
-    "sitemap_pages_found": 164,
-    "finished_at": "2026-10-17T05:26:31.214773+00:00"
+    "sitemap_pages_found": 165,
+    "finished_at": "2026-10-24T05:35:49.437403+00:00"
   }
 }
